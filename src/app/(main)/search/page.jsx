@@ -1,18 +1,24 @@
 // Search page
 import { Button } from "@/components/ui/button"
 import { Field, FieldSet, FieldGroup, FieldLabel } from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
+import { InputGroup, InputGroupInput, InputGroupAddon } from "@/components/ui/input-group"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
+import { Search, DollarSignIcon } from "lucide-react"
+import { Input } from "@/components/ui/input"
 
-function Search() {
+function SearchPage() {
     return (
         <div className="pt-10 px-20">
-            {/* Search form and results will go here */}
             {/* Search form */}
             <Field orientation="horizontal">
-                <Input placeholder="Search..." />
+                <InputGroup>
+                    <InputGroupAddon>
+                        <Search />
+                    </InputGroupAddon>
+                    <InputGroupInput placeholder="Search..." />
+                </InputGroup>
                 <Button>Search</Button>
             </Field>
             {/* Main content area */}
@@ -20,21 +26,47 @@ function Search() {
                 {/* Sidebar with filters */}
                 <div className="w-1/5 pr-4">
                     {/* Filter options */}
-                    <RadioGroup className={"border border-separator rounded-md p-4"}>
-                        <h3>Distance</h3>
-                        <div className="flex items-center gap-3">
-                            <RadioGroupItem value="5" id="option1" />
-                            <Label htmlFor="5">Within 5 miles</Label>
-                        </div>
-                        <div className="flex items-center gap-3">
-                            <RadioGroupItem value="15" id="option2" />
-                            <Label htmlFor="15">Within 15 miles</Label>
-                        </div>
-                        <div className="flex items-center gap-3">
-                            <RadioGroupItem value="50" id="option3" />
-                            <Label htmlFor="50">Within 50 miles</Label>
-                        </div>
-                    </RadioGroup>
+                    <FieldSet className="border border-separator rounded-md p-4">
+                        <FieldLabel>Distance</FieldLabel>
+                        <RadioGroup className="space-y-2">
+                            <div className="flex items-center gap-3">
+                                <RadioGroupItem value="within-5" id="within-5" />
+                                <Label htmlFor="within-5">Within 5 miles</Label>
+                            </div>
+                            <div className="flex items-center gap-3">
+                                <RadioGroupItem value="within-15" id="within-15" />
+                                <Label htmlFor="within-15">Within 15 miles</Label>
+                            </div>
+                            <div className="flex items-center gap-3">
+                                <RadioGroupItem value="within-50" id="within-50" />
+                                <Label htmlFor="within-50">Within 50 miles</Label>
+                            </div>
+                        </RadioGroup>
+                    </FieldSet>
+                    <FieldSet className="border border-separator rounded-md p-4 mt-4">
+                        <FieldGroup className={"gap-3"}>
+                            <FieldLabel>Price Range (Daily)</FieldLabel>
+                            <Field orientation="horizontal">
+                                <InputGroup>
+                                    <InputGroupAddon>
+                                        <DollarSignIcon />
+                                    </InputGroupAddon>
+                                    <InputGroupInput placeholder="Min" />
+                                </InputGroup>
+                                <span>to</span>
+                                <InputGroup>
+                                    <InputGroupAddon>
+                                        <DollarSignIcon />
+                                    </InputGroupAddon>
+                                    <InputGroupInput placeholder="Max" />
+                                </InputGroup>
+                            </Field>
+                            <Field orientation="horizontal">
+                                <Checkbox id="borrow" name="borrow" />
+                                <FieldLabel htmlFor="borrow">Available to Borrow</FieldLabel>
+                            </Field>
+                        </FieldGroup>
+                    </FieldSet>
                     <FieldSet className="border border-separator rounded-md p-4 mt-4">
                         <FieldGroup className={"gap-3"}>
                             <FieldLabel>Provider Type</FieldLabel>
@@ -64,4 +96,4 @@ function Search() {
     );
 }
 
-export default Search;
+export default SearchPage;
