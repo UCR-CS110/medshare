@@ -5,8 +5,16 @@ import { InputGroup, InputGroupInput, InputGroupAddon } from "@/components/ui/in
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Search, DollarSignIcon } from "lucide-react"
 import { Toggle } from "@/components/ui/toggle"
+import {
+    Card,
+    CardAction,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card"
+import { Search, DollarSignIcon, StarIcon } from "lucide-react"
 
 function SearchPage() {
     return (
@@ -71,15 +79,15 @@ function SearchPage() {
                         <FieldGroup className={"gap-3"}>
                             <FieldLabel>Provider Type</FieldLabel>
                             <Field orientation="horizontal">
-                                <Checkbox id="medical-clinic" name="medical-clinic"/>
+                                <Checkbox id="medical-clinic" name="medical-clinic" />
                                 <FieldLabel htmlFor="medical-clinic">Medical Clinic</FieldLabel>
                             </Field>
                             <Field orientation="horizontal">
-                                <Checkbox id="individual-caregivers" name="individual-caregivers"/>
+                                <Checkbox id="individual-caregivers" name="individual-caregivers" />
                                 <FieldLabel htmlFor="individual-caregivers">Individual Caregivers</FieldLabel>
                             </Field>
                             <Field orientation="horizontal">
-                                <Checkbox id="non-profit-centers" name="non-profit-centers"/>
+                                <Checkbox id="non-profit-centers" name="non-profit-centers" />
                                 <FieldLabel htmlFor="non-profit-centers">Non-Profit Centers</FieldLabel>
                             </Field>
                         </FieldGroup>
@@ -90,9 +98,41 @@ function SearchPage() {
                 </div>
                 {/* Search results */}
                 <div className="w-4/5 pl-4">
-                    <h2>Search Results</h2>
-                    {/* Search results will go here */}
-                    {/* Pagination controls will go here */}
+                    {/* Search results as 3 column grid of cards */}
+                    <div className="grid grid-cols-3 gap-4">
+                        {/* Repeat for each search result on page */}
+                        {[...Array(6)].map((_, index) => (
+                        <Card className="relative mx-auto w-full" key={index}>
+                            {/* Placeholder image */}
+                            <img
+                                className="relative z-20 aspect-video w-full object-cover brightness-60 grayscale dark:brightness-40"
+                                src="https://avatar.vercel.sh/shadcn1"
+                                alt=""
+                            />
+                            <CardHeader>
+                                <CardTitle>Equipment Name</CardTitle>
+                                <CardDescription>
+                                    <div>
+                                        Listing description details...
+                                    </div>
+                                    <div className="mt-2 flex items-center gap-4">
+                                        <span className="text-sm text-muted-foreground">$20/day</span>
+                                        <span className="flex-grow"></span>
+                                        <span className="ml-4 text-sm text-muted-foreground flex items-center gap-1">
+                                            <StarIcon className="w-4 h-4 fill-primary text-primary" />
+                                            Rating: 4.5
+                                        </span>
+                                    </div>
+                                </CardDescription>
+                            </CardHeader>
+                            <CardFooter>
+                                <Button>View Details</Button>
+                                <span className="ml-auto text-sm text-muted-foreground">Provider Name</span>
+                            </CardFooter>
+                        </Card>
+                        ))}
+                    </div>
+                    {/* Pagination controls */}
                 </div>
             </div>
         </div>
