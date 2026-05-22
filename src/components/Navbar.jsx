@@ -1,20 +1,33 @@
+import { Button } from "@/components/ui/button"
 
 function Navbar() {
     return (
         <nav className="sticky top-0 z-40 w-full border-b border-separator">
             <header className="flex h-16 items-center justify-between px-4">
-                <h1>MedShare</h1>
+                <h1 className="">MedShare</h1>
                 {/* <Logo /> */}
                 <ul className="flex space-x-4">
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/search">Search</a></li>
-                    <li><a href="/about">About</a></li>
+                    <li>
+                        <Button variant="link">
+                            <a href="/">Home</a>
+                        </Button>
+                    </li>
+                    <li>
+                        <Button variant="link">
+                            <a href="/search">Search</a>
+                        </Button>
+                    </li>
+                    <li>
+                        <Button variant="link">
+                            <a href="/about">About</a>
+                        </Button>
+                    </li>
                 </ul>
-                {/* Profile dropdown */}
+                {/* Profile dropdown or sign in button */}
                 <div className="">
-                    <button className="flex items-center space-x-2">
-                        <span>Profile</span>
-                    </button>
+                    <Button variant="default">
+                        <a href="/login">Sign In</a>
+                    </Button>
                 </div>
             </header>
         </nav>
