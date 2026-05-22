@@ -6,7 +6,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Search, DollarSignIcon } from "lucide-react"
-import { Input } from "@/components/ui/input"
+import { Toggle } from "@/components/ui/toggle"
 
 function SearchPage() {
     return (
@@ -84,6 +84,9 @@ function SearchPage() {
                             </Field>
                         </FieldGroup>
                     </FieldSet>
+                    <Toggle className="mt-4 w-full" id="verified" name="verified" variant="outline">
+                        Verified Providers Only
+                    </Toggle>
                 </div>
                 {/* Search results */}
                 <div className="w-4/5 pl-4">
