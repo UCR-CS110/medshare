@@ -10,7 +10,7 @@ import {
   FieldSeparator,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { GalleryVerticalEndIcon } from "lucide-react"
+import { UserPlus } from "lucide-react"
 
 export function SignupForm({
   className,
@@ -23,7 +23,7 @@ export function SignupForm({
           <div className="flex flex-col items-center gap-2 text-center">
             <a href="#" className="flex flex-col items-center gap-2 font-medium">
               <div className="flex size-8 items-center justify-center rounded-md">
-                <GalleryVerticalEndIcon className="size-6" />
+                <UserPlus className="size-6"/>
               </div>
               <span className="sr-only">MedShare</span>
             </a>
