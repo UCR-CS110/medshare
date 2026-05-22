@@ -14,6 +14,15 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
+import { 
+    Pagination,
+    PaginationContent,
+    PaginationItem,
+    PaginationNext,
+    PaginationPrevious,
+    PaginationLink,
+    PaginationEllipsis,
+} from "@/components/ui/pagination"
 import { Search, DollarSignIcon, StarIcon } from "lucide-react"
 
 function SearchPage() {
@@ -133,6 +142,29 @@ function SearchPage() {
                         ))}
                     </div>
                     {/* Pagination controls */}
+                    <Pagination className="mt-6" aria-label="Search results pagination">
+                        <PaginationContent>
+                            <PaginationPrevious>
+                                Previous
+                            </PaginationPrevious>
+                            <PaginationItem>
+                                <PaginationLink href="#">1</PaginationLink>
+                            </PaginationItem>
+                            <PaginationItem>
+                                <PaginationLink href="#">2</PaginationLink>
+                            </PaginationItem>
+                            <PaginationItem>
+                                <PaginationLink href="#">3</PaginationLink>
+                            </PaginationItem>
+                            <PaginationEllipsis />
+                            <PaginationItem>
+                                <PaginationLink href="#">10</PaginationLink>
+                            </PaginationItem>
+                            <PaginationNext>
+                                Next
+                            </PaginationNext>
+                        </PaginationContent>
+                    </Pagination>
                 </div>
             </div>
         </div>
