@@ -7,10 +7,22 @@ Patients who require medical equipment often have a hard time getting their hand
 ### Currently Working:
 Frontend pages for user authentication, the home page, equipment listings details, and the search page, with no backend functionality.
 
+User auth pages:
+`localhost:3000/login` and `localhost:3000/signup`
+
+Home page:
+`localhost:3000/`
+
+Equipment listing details page:
+`localhost:3000/listings/:id` (id doesn't matter for now)
+
+Search page:
+`localhost:3000/search`
+
 ## Tools Used
 - **Frontend**: React, Next.js, Tailwind CSS, shadcn/ui components
 - **Backend**: Node.js, Next.js API routes (planned)
-- **Database**: MongoDB, Mongoose (planned)
+- **Database**: MongoDB Atlas, Mongoose (planned)
 
 ## How to Run
 1. Clone the repository
