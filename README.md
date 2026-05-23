@@ -4,6 +4,9 @@ A website to share medical equipment for patients and institutions.
 ## Description
 Patients who require medical equipment often have a hard time getting their hands on it due to pricing and scarcity. MedShare is a medical equipment sharing website that makes it easy for patients to find the medical equipment that they need, and for providers to find patients who are in need of that medical equipment. Much like Airbnb, both the provider and patients/caregivers can leave ratings and reviews for the other after the service is complete. Over time, providers can build strong reputations, allowing patients to get access to reliable equipment from trustworthy sources.
 
+### Currently Working:
+Frontend pages for user authentication, the home page, equipment listings details, and the search page, with no backend functionality.
+
 ## Tools Used
 - **Frontend**: React, Next.js, Tailwind CSS, shadcn/ui components
 - **Backend**: Node.js, Next.js API routes (planned)
