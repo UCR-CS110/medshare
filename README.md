@@ -4,6 +4,42 @@ A website to share medical equipment for patients and institutions.
 ## Description
 Patients who require medical equipment often have a hard time getting their hands on it due to pricing and scarcity. MedShare is a medical equipment sharing website that makes it easy for patients to find the medical equipment that they need, and for providers to find patients who are in need of that medical equipment. Much like Airbnb, both the provider and patients/caregivers can leave ratings and reviews for the other after the service is complete. Over time, providers can build strong reputations, allowing patients to get access to reliable equipment from trustworthy sources.
 
+### Currently Working:
+Frontend pages for user authentication, the home page, equipment listings details, and the search page, with no backend functionality.
+
+User auth pages:
+`localhost:3000/login` and `localhost:3000/signup`
+
+Home page:
+`localhost:3000/`
+
+Equipment listing details page:
+`localhost:3000/listings/:id` (id doesn't matter for now)
+
+Search page:
+`localhost:3000/search`
+
+## Tools Used
+- **Frontend**: React, Next.js, Tailwind CSS, shadcn/ui components
+- **Backend**: Node.js, Next.js API routes (planned)
+- **Database**: MongoDB Atlas, Mongoose (planned)
+
+## How to Run
+1. Clone the repository
+2. cd into the project directory:
+```bash
+`cd final-project-medshare`
+```
+2. Install dependencies:
+```bash
+`npm install`
+```
+3. Start the development server:
+```bash
+`npm run dev`
+```
+4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
 <hr>
 
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/c4wSHrp5)
