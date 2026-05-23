@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button"
 
 function Navbar() {
     return (
-        <nav className="sticky top-0 z-40 w-full border-b border-separator">
+        <nav className="sticky top-0 z-40 w-full border-b border-separator bg-background">
             <header className="flex h-16 items-center justify-between px-4">
                 <h1 className="">MedShare</h1>
                 {/* <Logo /> */}
