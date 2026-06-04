@@ -23,7 +23,12 @@ export function LoginForm({
     const formData = new FormData(event.currentTarget);
     const email = formData.get("email");
     const password = formData.get("password");
-    await signIn("credentials", { email, password });
+    const result = await signIn("credentials", { email, password, redirect: true, callbackUrl: "/home" });
+
+    // Show error if login failed
+    if (result?.error) {
+      alert("Login failed: " + result.error);
+    }
   }
 
   return (
