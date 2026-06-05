@@ -6,7 +6,7 @@ import CredentialsProvider from "next-auth/providers/credentials"
 import User from "@/models/User"
 
 export const authOptions = ({
-  secret: process.env.BETTER_AUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET,
   pages: [
     {
       signIn: "/login",
