@@ -5,7 +5,7 @@ import connectDB from "@/lib/db"
 import CredentialsProvider from "next-auth/providers/credentials"
 import User from "@/models/User"
 
-const handler = NextAuth({
+export const authOptions = ({
   secret: process.env.BETTER_AUTH_SECRET,
   pages: [
     {
@@ -13,6 +13,9 @@ const handler = NextAuth({
       error: "/login?error=1"
     },
   ],
+  session: {
+    strategy: "jwt",
+  },
   providers: [
     // GoogleProvider({
     //   clientId: process.env.GOOGLE_ID,
@@ -53,5 +56,7 @@ const handler = NextAuth({
     },
   }
 })
+
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST }
