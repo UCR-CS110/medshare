@@ -1,12 +1,17 @@
 import NextAuth from "next-auth"
+import bcrypt from "bcryptjs"
 import GoogleProvider from "next-auth/providers/google"
+import connectDB from "@/lib/db"
 import CredentialsProvider from "next-auth/providers/credentials"
+import User from "@/models/User"
 
 const handler = NextAuth({
-  // Test secret, replace with env variable in production
-  secret: "test_secret",
+  secret: process.env.BETTER_AUTH_SECRET,
   pages: [
-    { signIn: "/login" },
+    {
+      signIn: "/login",
+      error: "/login?error=1"
+    },
   ],
   providers: [
     // GoogleProvider({
@@ -21,10 +26,24 @@ const handler = NextAuth({
       },
       async authorize(credentials) {
         if (credentials.email && credentials.password) {
-          // User validation logic (TODO)
-          return { data: { id: "1", email: credentials.email }, error: null };
+          await connectDB();
+
+          const user = await User.findOne({ email: credentials.email }).select("+password");
+          if (!user) {
+            console.log("User not found with email:", credentials.email);
+            throw new Error("User not found");
+          }
+
+          const isValid = await bcrypt.compare(credentials.password, user.password);
+          if (!isValid) {
+            console.log("Invalid password for email:", credentials.email);
+            throw new Error("Invalid password");
+          }
+
+          console.log("User authenticated:", user.email);
+          return { id: user._id, name: user.name, email: user.email };
         }
-        return { data: null, error: "Invalid credentials" };
+        throw new Error("Invalid credentials");
       }
     })
   ],

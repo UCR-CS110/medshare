@@ -16,9 +16,45 @@ export function SignupForm({
   className,
   ...props
 }) {
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const username = formData.get("username");
+    const email = formData.get("email");
+    const password = formData.get("password");
+    const confirmPassword = formData.get("confirm-password");
+
+    if (password !== confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, email, password }),
+      });
+
+      if (response.ok) {
+        alert("Registration successful! Please log in.");
+        window.location.href = "/login";
+      } else {
+        const data = await response.json();
+        alert(`Registration failed: ${data.error}`);
+      }
+    } catch (error) {
+      console.error("Error during registration:", error);
+      alert("An error occurred. Please try again.");
+    }
+  }
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <form>
+      <form onSubmit={handleSubmit}>
         <FieldGroup>
           <div className="flex flex-col items-center gap-2 text-center">
             <a href="#" className="flex flex-col items-center gap-2 font-medium">
@@ -33,16 +69,20 @@ export function SignupForm({
             </FieldDescription>
           </div>
           <Field>
+            <FieldLabel htmlFor="username">Username</FieldLabel>
+            <Input id="username" name="username" type="string" placeholder="Username" required />
+          </Field>
+          <Field>
             <FieldLabel htmlFor="email">Email</FieldLabel>
-            <Input id="email" type="email" placeholder="m@example.com" required />
+            <Input id="email" name="email" type="email" placeholder="m@example.com" required />
           </Field>
           <Field>
             <FieldLabel htmlFor="password">Password</FieldLabel>
-            <Input id="password" type="password" required />
+            <Input id="password" name="password" type="password" required />
           </Field>
           <Field>
             <FieldLabel htmlFor="confirm-password">Confirm Password</FieldLabel>
-            <Input id="confirm-password" type="password" required />
+            <Input id="confirm-password" name="confirm-password" type="password" required />
             <FieldDescription>Please confirm your password.</FieldDescription>
           </Field>
           <Field>

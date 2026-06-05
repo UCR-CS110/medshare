@@ -23,11 +23,14 @@ export function LoginForm({
     const formData = new FormData(event.currentTarget);
     const email = formData.get("email");
     const password = formData.get("password");
-    const result = await signIn("credentials", { email, password, redirect: true, callbackUrl: "/home" });
+    const result = await signIn("credentials", { email, password, redirect: false });
 
     // Show error if login failed
     if (result?.error) {
       alert("Login failed: " + result.error);
+    } else {
+      // Redirect to home page on successful login
+      window.location.href = "/";
     }
   }
 
@@ -49,13 +52,13 @@ export function LoginForm({
           </div>
           <Field>
             <FieldLabel htmlFor="email">Email</FieldLabel>
-            <Input id="email" type="email" placeholder="m@example.com" required />
+            <Input id="email" name="email" type="email" placeholder="m@example.com" required />
           </Field>
           <Field>
             <div className="flex items-center">
               <FieldLabel htmlFor="password">Password</FieldLabel>
             </div>
-            <Input id="password" type="password" required />
+            <Input id="password" name="password" type="password" required />
           </Field>
           <Field>
             <Button type="submit">Login</Button>
