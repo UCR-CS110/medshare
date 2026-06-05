@@ -17,10 +17,10 @@ export const authOptions = ({
     strategy: "jwt",
   },
   providers: [
-    // GoogleProvider({
-    //   clientId: process.env.GOOGLE_ID,
-    //   clientSecret: process.env.GOOGLE_SECRET,
-    // }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    }),
     CredentialsProvider({
       name: "Credentials",
       credentials: {
@@ -53,6 +53,28 @@ export const authOptions = ({
   callbacks: {
     async redirect({ url, baseUrl }) {
       return url.startsWith(baseUrl) ? url : baseUrl;
+    },
+    async signIn({ user, account }) {
+      if (account?.provider === "google") {
+        try {
+          await connectDB();
+          await User.findOneAndUpdate(
+            { email: user.email.toLowerCase() },
+            {
+              $setOnInsert: {
+                name:  user.name,
+                email: user.email.toLowerCase(),
+                image: user.image ?? null,
+              },
+            },
+            { upsert: true, new: true }
+          );
+        } catch (err) {
+          console.error("signIn callback error:", err);
+          return false;
+        }
+      }
+      return true;
     },
   }
 })
