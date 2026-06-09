@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button"
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import { SignOutButton } from "@/components/SignOutButton";
+import Link from "next/link";
 
 async function Navbar() {
 
@@ -15,17 +16,17 @@ async function Navbar() {
                 <ul className="flex space-x-4">
                     <li>
                         <Button variant="link">
-                            <a href="/">Home</a>
+                            <Link href="/">Home</Link>
                         </Button>
                     </li>
                     <li>
                         <Button variant="link">
-                            <a href="/search">Search</a>
+                            <Link href="/search">Search</Link>
                         </Button>
                     </li>
                     <li>
                         <Button variant="link">
-                            <a href="/about">About</a>
+                            <Link href="/about">About</Link>
                         </Button>
                     </li>
                 </ul>
@@ -35,13 +36,13 @@ async function Navbar() {
                         <div className="flex items-center gap-4">
                             {/* Clickable user name that leads to profile */}
                             <Button variant="link" asChild>
-                                <a href="/profile">{session.user.name}</a>
+                                <Link href="/profile">{session.user.name}</Link>
                             </Button>
                             <SignOutButton />
                         </div>
                     ) : (
                         <Button variant="default">
-                            <a href="/login">Sign In</a>
+                            <Link href="/login">Sign In</Link>
                         </Button>
                     )}
                 </div>
