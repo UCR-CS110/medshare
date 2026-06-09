@@ -1,6 +1,13 @@
 import { Button } from "@/components/ui/button"
+import { getServerSession } from "next-auth/next"
+import { authOptions } from "@/app/api/auth/[...nextauth]/route"
+import { SignOutButton } from "@/components/SignOutButton";
+import Link from "next/link";
 
-function Navbar() {
+async function Navbar() {
+
+    const session = await getServerSession(authOptions);
+
     return (
         <nav className="sticky top-0 z-40 w-full border-b border-separator bg-background">
             <header className="flex h-16 items-center justify-between px-4">
@@ -9,25 +16,35 @@ function Navbar() {
                 <ul className="flex space-x-4">
                     <li>
                         <Button variant="link">
-                            <a href="/">Home</a>
+                            <Link href="/">Home</Link>
                         </Button>
                     </li>
                     <li>
                         <Button variant="link">
-                            <a href="/search">Search</a>
+                            <Link href="/search">Search</Link>
                         </Button>
                     </li>
                     <li>
                         <Button variant="link">
-                            <a href="/about">About</a>
+                            <Link href="/about">About</Link>
                         </Button>
                     </li>
                 </ul>
-                {/* Profile dropdown or sign in button */}
+                {/* Sign out or sign in button */}
                 <div className="">
-                    <Button variant="default">
-                        <a href="/login">Sign In</a>
-                    </Button>
+                    {session?.user ? (
+                        <div className="flex items-center gap-4">
+                            {/* Clickable user name that leads to profile */}
+                            <Button variant="link" asChild>
+                                <Link href="/profile">{session.user.name}</Link>
+                            </Button>
+                            <SignOutButton />
+                        </div>
+                    ) : (
+                        <Button variant="default">
+                            <Link href="/login">Sign In</Link>
+                        </Button>
+                    )}
                 </div>
             </header>
         </nav>
