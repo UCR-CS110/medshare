@@ -32,19 +32,9 @@ async function Navbar() {
                 </ul>
                 {/* Sign out or sign in button */}
                 <div className="">
-                    {session?.user ? (
-                        <div className="flex items-center gap-4">
-                            {/* Clickable user name that leads to profile */}
-                            <Button variant="link" asChild>
-                                <Link href="/profile">{session.user.name}</Link>
-                            </Button>
-                            <SignOutButton />
-                        </div>
-                    ) : (
-                        <Button variant="default">
-                            <Link href="/login">Sign In</Link>
-                        </Button>
-                    )}
+                    <Button variant="default">
+                        <Link href="/login">Sign In</Link>
+                    </Button>
                 </div>
             </header>
         </nav>
