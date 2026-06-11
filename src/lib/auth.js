@@ -1,14 +1,16 @@
 import NextAuth from "next-auth"
-import { authOptions } from "@/lib/auth"
+import bcrypt from "bcryptjs"
+import GoogleProvider from "next-auth/providers/google"
+import connectDB from "@/lib/db"
+import CredentialsProvider from "next-auth/providers/credentials"
+import User from "@/models/User"
 
-export const authOptions = ({
+export const authOptions = {
   secret: process.env.NEXTAUTH_SECRET,
-  pages: [
-    {
-      signIn: "/login",
-      error: "/login?error=1"
-    },
-  ],
+  pages: {
+    signIn: "/login",
+    error: "/login?error=1",
+  },
   session: {
     strategy: "jwt",
   },
@@ -43,20 +45,10 @@ export const authOptions = ({
           return { id: user._id, name: user.name, email: user.email };
         }
         throw new Error("Invalid credentials");
-      }
+      },
     })
   ],
   callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id;
-      }
-      return token;
-    },
-    async session({ session, token }) {
-      session.user.id = token.id;
-      return session;
-    },
     async redirect({ url, baseUrl }) {
       return url.startsWith(baseUrl) ? url : baseUrl;
     },
@@ -68,7 +60,7 @@ export const authOptions = ({
             { email: user.email.toLowerCase() },
             {
               $setOnInsert: {
-                name: user.name,
+                name:  user.name,
                 email: user.email.toLowerCase(),
                 image: user.image ?? null,
               },
@@ -82,9 +74,17 @@ export const authOptions = ({
       }
       return true;
     },
+    async jwt({ token, user }) {
+        if (user) {
+            token.id = user.id;
+        }
+        return token;
+    },
+    async session({ session, token }) {
+        if (token) {
+            session.user.id = token.id;
+        }
+        return session;
+    },
   }
-})
-
-const handler = NextAuth(authOptions);
-
-export { handler as GET, handler as POST }
+}
