@@ -32,3 +32,41 @@ export async function GET(request, { params }) {
         });
     }
 }
+
+// Create a new booking for the authenticated user passing in the item ID in the request body
+export async function POST(request) {
+    const session = await getServerSession(authOptions);
+    if (!session) {
+        return new Response(JSON.stringify({ error: "Unauthorized" }), {
+            status: 401,
+            headers: { "Content-Type": "application/json" },
+        });
+    }
+
+    try {
+        await connectDB();
+
+        const data = await request.json();
+        const { listingId, startDate, endDate } = data;
+
+        const newBooking = new Booking({
+            listing: mongoose.Types.ObjectId(listingId),
+            renter: mongoose.Types.ObjectId(session.user.id),
+            startDate: new Date(startDate),
+            endDate: new Date(endDate),
+        });
+
+        await newBooking.save();
+
+        return new Response(JSON.stringify(newBooking), {
+            status: 201,
+            headers: { "Content-Type": "application/json" },
+        });
+    } catch (error) {
+        console.error("Error creating booking:", error);
+        return new Response(JSON.stringify({ error: "Internal server error" }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" },
+        });
+    }
+}
