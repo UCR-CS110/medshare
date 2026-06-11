@@ -29,6 +29,11 @@ function Navbar() {
                             <Link href="/about">About</Link>
                         </Button>
                     </li>
+                    <li>
+                        <Button variant="link">
+                            <Link href="/post">Post Equipment</Link>
+                        </Button>
+                    </li>
                 </ul>
                 {/* Sign out or sign in button */}
                 <div className="">

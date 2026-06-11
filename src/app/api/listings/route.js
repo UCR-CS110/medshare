@@ -1,6 +1,10 @@
 import connectDB from "@/lib/db";
 import Listing from "@/models/Listing";
 import Review from "@/models/Review";
+import User from "@/models/User";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth";
+
 
 export async function GET(req) {
  try {
@@ -54,4 +58,30 @@ export async function GET(req) {
  } catch (error) {
   return Response.json({ error: error.message }, { status: 500 });
  }
+}
+
+export async function POST(req) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session) return Response.json({ error: "Unauthorized" }, { status: 401 });
+
+    await connectDB();
+
+    const user = await User.findOne({ email: session.user.email });
+    if (!user) return Response.json({ error: "User not found" }, { status: 404 });
+
+    const { title, description, dailyRate, location } = await req.json();
+
+    const listing = await Listing.create({
+      title,
+      description,
+      dailyRate,
+      location,
+      seller: user._id,
+    });
+
+    return Response.json(listing, { status: 201 });
+  } catch (error) {
+    return Response.json({ error: error.message }, { status: 500 });
+  }
 }
