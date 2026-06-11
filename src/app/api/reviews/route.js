@@ -2,7 +2,7 @@ import connectDB from "@/lib/db";
 import Review from "@/models/Review";
 import User from "@/models/User";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 
 export async function POST(req) {
   try {
