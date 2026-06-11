@@ -51,6 +51,16 @@ export const authOptions = ({
     })
   ],
   callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      session.user.id = token.id;
+      return session;
+    },
     async redirect({ url, baseUrl }) {
       return url.startsWith(baseUrl) ? url : baseUrl;
     },
@@ -62,7 +72,7 @@ export const authOptions = ({
             { email: user.email.toLowerCase() },
             {
               $setOnInsert: {
-                name:  user.name,
+                name: user.name,
                 email: user.email.toLowerCase(),
                 image: user.image ?? null,
               },

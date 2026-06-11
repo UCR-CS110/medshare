@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import { unique } from 'next/dist/build/utils';
 const Schema = mongoose.Schema;
 
 const reviewSchema = new Schema({
@@ -11,8 +10,8 @@ const reviewSchema = new Schema({
     booking: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Booking",
-        required: true,
-        unique: true,
+        //required: true,
+        //unique: true,
     },
     reviewer: {
         type: mongoose.Schema.Types.ObjectId,
@@ -35,6 +34,6 @@ const reviewSchema = new Schema({
     },
 });
 
-const Review = mongoose.model('Review', reviewSchema);
+const Review = mongoose.models.Review || mongoose.model('Review', reviewSchema);
 
 export default Review;

@@ -1,3 +1,6 @@
+"use client";
+import { useState, useEffect} from "react";
+import { useRouter } from "next/navigation";
 // Search page
 import { Button } from "@/components/ui/button"
 import { Field, FieldSet, FieldGroup, FieldLabel } from "@/components/ui/field"
@@ -24,8 +27,19 @@ import {
     PaginationEllipsis,
 } from "@/components/ui/pagination"
 import { Search, DollarSignIcon, StarIcon } from "lucide-react"
+import Link from "next/link"
+
+
+
 
 function SearchPage() {
+    const [listings, setListings] = useState([]);
+
+    useEffect(() => {
+        fetch("/api/listings")
+            .then(r => r.json())
+            .then(data => setListings(data));
+    }, []);
     return (
         <div className="pt-10 px-20">
             {/* Search form */}
@@ -110,36 +124,33 @@ function SearchPage() {
                     {/* Search results as 3 column grid of cards */}
                     <div className="grid grid-cols-3 gap-4">
                         {/* Repeat for each search result on page */}
-                        {[...Array(6)].map((_, index) => (
-                        <Card className="relative mx-auto w-full" key={index}>
-                            {/* Placeholder image */}
-                            <img
-                                className="relative z-20 aspect-video w-full object-cover brightness-60 grayscale dark:brightness-40"
-                                src="https://avatar.vercel.sh/shadcn1"
-                                alt=""
-                            />
-                            <CardHeader>
-                                <CardTitle>Equipment Name</CardTitle>
-                                <CardDescription>
-                                    <div>
-                                        Listing description details...
-                                    </div>
-                                    <div className="mt-2 flex items-center gap-4">
-                                        <span className="text-sm text-muted-foreground">$20/day</span>
-                                        <span className="flex-grow"></span>
-                                        <span className="ml-4 text-sm text-muted-foreground flex items-center gap-1">
-                                            <StarIcon className="w-4 h-4 fill-primary text-primary" />
-                                            Rating: 4.5
-                                        </span>
-                                    </div>
-                                </CardDescription>
-                            </CardHeader>
-                            <CardFooter>
-                                <Button>View Details</Button>
-                                <span className="ml-auto text-sm text-muted-foreground">Provider Name</span>
-                            </CardFooter>
-                        </Card>
-                        ))}
+                        {listings.map((listing) => (
+    <Card className="relative mx-auto w-full" key={listing._id}>
+        <div className="aspect-video w-full bg-gray-200 flex items-center justify-center text-gray-400 text-sm">
+            Image
+        </div>
+        <CardHeader>
+            <CardTitle>{listing.title}</CardTitle>
+            <CardDescription>
+                <div>{listing.description}</div>
+                <div className="mt-2 flex items-center gap-4">
+                    <span className="text-sm text-muted-foreground">${listing.dailyRate}/day</span>
+                    <span className="flex-grow"></span>
+                    <span className="text-sm text-muted-foreground">{listing.location}</span>
+                </div>
+            </CardDescription>
+        </CardHeader>
+        <CardFooter>
+            <Button asChild>
+                <Link href={`/listings/${listing._id}`}>View Details</Link>
+            </Button>
+            <span className="ml-4 text-sm text-muted-foreground flex items-center gap-1">
+                <StarIcon className="w-4 h-4 fill-primary text-primary" />
+                {listing.avgRating ? `${listing.avgRating} (${listing.reviewCount})` : "No reviews"}
+            </span>
+        </CardFooter>
+    </Card>
+))}
                     </div>
                     {/* Pagination controls */}
                     <Pagination className="mt-6" aria-label="Search results pagination">

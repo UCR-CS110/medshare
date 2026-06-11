@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { ReviewForm } from "@/components/review-form";
 
 // Placeholder box component to replace images
 function Placeholder({ className = "", label = "Image" }) {
@@ -175,29 +176,56 @@ function SimilarItems() {
   );
 }
 
-export default function ListingDetailPage() {
+function ReviewsList({ reviews }) {
+  if (reviews.length === 0) return <p className="text-sm text-gray-400">No reviews yet.</p>;
+
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900 font-sans">
-      <main className="max-w-5xl mx-auto px-6 py-8">
-        {/* Breadcrumb */}
-        <p className="text-sm text-gray-400 mb-6">
-          <Link href="/listings" className="text-green-700 hover:underline">Marketplace</Link>
-          {" › "}
-          <Link href="/listings" className="text-green-700 hover:underline">Mobility Aids</Link>
-          {" › "}
-          <span className="text-gray-700">Standard Foldable Wheelchair</span>
-        </p>
-
-        {/* Hero grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <ImageGallery />
-          <ProductDetails />
+    <div className="space-y-4">
+      {reviews.map((review) => (
+        <div key={review._id} className="bg-white border border-gray-200 rounded-xl p-4 space-y-1">
+          <div className="flex items-center justify-between">
+            <p className="font-semibold text-gray-900 text-sm">{review.reviewer?.name ?? "Anonymous"}</p>
+            <p className="text-yellow-500 text-sm">{"★".repeat(review.rating)}{"☆".repeat(5 - review.rating)}</p>
+          </div>
+          <p className="text-sm text-gray-600">{review.comment}</p>
+          <p className="text-xs text-gray-400">{new Date(review.createdAt).toLocaleDateString()}</p>
         </div>
-
-        <ProviderSection />
-        <SimilarItems />
-      </main>
-
+      ))}
     </div>
+  );
+}
+
+export default function ListingDetailPage() {
+  const [reviews, setReviews] = useState([]);
+
+useEffect(() => {
+  fetch(`/api/listings/${id}`)
+    .then(r => r.json())
+    .then(data => {
+      setListing(data);
+      setLoading(false);
+    });
+
+  fetch(`/api/reviews?listingId=${id}`)
+  .then(r => r.json())
+  .then(data => {
+    setReviews(Array.isArray(data.reviews) ? data.reviews : []);
+    setAvgRating(data.avgRating);
+    setReviewCount(data.count);
+  });
+}, [id]);
+
+  return (
+    <section className="mt-10 pt-8 border-t border-gray-200">
+  <h2 className="text-xl font-bold text-gray-900 mb-4">Reviews</h2>
+  <ReviewsList reviews={reviews} />
+  <div className="mt-6">
+    <ReviewForm listingId={id} onSubmitted={() => {
+      fetch(`/api/reviews?listingId=${id}`)
+        .then(r => r.json())
+        .then(data => setReviews(Array.isArray(data) ? data : []));
+    }} />
+  </div>
+</section>
   );
 }
