@@ -2,6 +2,7 @@
 
 import { use, useState, useEffect } from "react";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 import { ReviewForm } from "@/components/review-form";
 
 function Placeholder({ className = "", label = "Image" }) {
@@ -35,7 +36,56 @@ function ImageGallery() {
 }
 
 function PricingBox({ listing }) {
+  const { data: session } = useSession();
   const [requested, setRequested] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+  const [startDate, setStartDate] = useState(() => {
+    const start = new Date();
+    start.setDate(start.getDate());
+    return start.toISOString().slice(0, 10);
+  });
+  const [endDate, setEndDate] = useState(() => {
+    const end = new Date();
+    end.setDate(end.getDate() + 1);
+    return end.toISOString().slice(0, 10);
+  });
+
+  async function handleRequest() {
+    if (!session?.user?.id) {
+      setError("Please sign in to request this equipment.");
+      return;
+    }
+
+    setSubmitting(true);
+    setError("");
+
+    try {
+      const response = await fetch("/api/bookings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          listingId: listing?._id,
+          startDate,
+          endDate,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.error || "Unable to send request.");
+        return;
+      }
+
+      setRequested(true);
+    } catch {
+      setError("Unable to send request.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
   return (
     <div className="border border-gray-200 rounded-xl p-4 bg-white space-y-4">
       <div className="flex justify-between pb-3 border-b border-gray-100">
@@ -49,14 +99,36 @@ function PricingBox({ listing }) {
       <div className="space-y-1.5 text-sm text-gray-600">
         <p>Pickup: <strong className="text-gray-900">{listing?.location}</strong></p>
       </div>
+      <div className="grid grid-cols-2 gap-3 text-sm">
+        <label className="space-y-1">
+          <span className="block text-xs font-medium text-gray-500">Start date</span>
+          <input
+            type="date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            className="w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-600"
+          />
+        </label>
+        <label className="space-y-1">
+          <span className="block text-xs font-medium text-gray-500">End date</span>
+          <input
+            type="date"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            className="w-full rounded-lg border border-gray-200 px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-600"
+          />
+        </label>
+      </div>
+      {error ? <p className="text-sm text-red-600">{error}</p> : null}
       <div className="space-y-2 pt-1">
         <button
-          onClick={() => setRequested(true)}
-          className={`w-full py-3 rounded-lg text-white font-semibold text-base transition-colors ${
+          onClick={handleRequest}
+          disabled={requested || submitting}
+          className={`w-full py-3 rounded-lg text-white font-semibold text-base transition-colors disabled:cursor-not-allowed disabled:opacity-70 ${
             requested ? "bg-teal-700" : "bg-green-700 hover:bg-green-800"
           }`}
         >
-          {requested ? "Request Sent!" : "Request to Borrow"}
+          {requested ? "Request Sent!" : submitting ? "Sending..." : "Request to Borrow"}
         </button>
         <button className="w-full py-2.5 rounded-lg border border-green-700 text-green-700 text-sm font-medium hover:bg-green-50 transition-colors">
           Message Provider
