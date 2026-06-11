@@ -39,22 +39,29 @@ function SearchPage() {
     const [maxPrice, setMaxPrice] = useState("");
     const [verified, setVerified] = useState(false);
     const [providerTypes, setProviderTypes] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
 
-    function fetchListings() {
+    function fetchListings(pg = currentPage) {
         const params = new URLSearchParams();
         if (query) params.set("query", query);
         if (minPrice) params.set("minPrice", minPrice);
         if (maxPrice) params.set("maxPrice", maxPrice);
         if (verified) params.set("verified", "true");
         if (providerTypes.length > 0) params.set("providerType", providerTypes[0]);
+        params.set("page", pg);
 
         fetch(`/api/listings?${params.toString()}`)
-            .then(r => r.json())
-            .then(data => setListings(Array.isArray(data) ? data : []));
+        .then(r => r.json())
+        .then(data => {
+            setListings(Array.isArray(data.listings) ? data.listings : []);
+            setTotalPages(data.totalPages || 1);
+            setCurrentPage(pg);
+        });
     }
 
     useEffect(() => {
-        fetchListings();
+        fetchListings(1);
     }, []);
 
     return (
@@ -71,7 +78,10 @@ function SearchPage() {
                     onChange={(e) => setQuery(e.target.value)}
                     />
                 </InputGroup>
-                <Button onClick={fetchListings}>Search</Button>
+                <Button onClick={() => {
+                    setCurrentPage(1);
+                    fetchListings(1);
+                }}>Search</Button>
             </Field>
             {/* Main content area */}
             <div className="flex mt-5">
@@ -185,28 +195,28 @@ function SearchPage() {
                     </div>
                     {/* Pagination controls */}
                     <Pagination className="mt-6" aria-label="Search results pagination">
-                        <PaginationContent>
-                            <PaginationPrevious>
-                                Previous
-                            </PaginationPrevious>
-                            <PaginationItem>
-                                <PaginationLink href="#">1</PaginationLink>
+                    <PaginationContent>
+                        <PaginationPrevious
+                            onClick={() => currentPage > 1 && fetchListings(currentPage - 1)}
+                            className={currentPage <= 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                        />
+                        {Array.from({ length: totalPages }, (_, i) => i + 1).map((pg) => (
+                            <PaginationItem key={pg}>
+                                <PaginationLink
+                                    onClick={() => fetchListings(pg)}
+                                    isActive={pg === currentPage}
+                                    className="cursor-pointer"
+                                >
+                                    {pg}
+                                </PaginationLink>
                             </PaginationItem>
-                            <PaginationItem>
-                                <PaginationLink href="#">2</PaginationLink>
-                            </PaginationItem>
-                            <PaginationItem>
-                                <PaginationLink href="#">3</PaginationLink>
-                            </PaginationItem>
-                            <PaginationEllipsis />
-                            <PaginationItem>
-                                <PaginationLink href="#">10</PaginationLink>
-                            </PaginationItem>
-                            <PaginationNext>
-                                Next
-                            </PaginationNext>
-                        </PaginationContent>
-                    </Pagination>
+                        ))}
+                        <PaginationNext
+                            onClick={() => currentPage < totalPages && fetchListings(currentPage + 1)}
+                            className={currentPage >= totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                        />
+                    </PaginationContent>
+                </Pagination>
                 </div>
             </div>
         </div>

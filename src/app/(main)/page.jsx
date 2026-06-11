@@ -33,7 +33,7 @@ function Home() {
           </FieldGroup>
         </div>
         <div className="w-1/2 flex items-center justify-center my-6">
-          <img src="https://placehold.co/400x300/black/white" alt="Placeholder Image"/>
+          <img src="home/stockphoto_seniorcitizen.png" alt="Placeholder Image"/>
         </div>
       </div>
       <div className="px-20 my-20">

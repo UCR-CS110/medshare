@@ -13,3 +13,17 @@ export async function GET(req, { params }) {
     return Response.json({ error: error.message }, { status: 500 });
   }
 }
+
+export async function DELETE(req, { params }) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session) return Response.json({ error: "Unauthorized" }, { status: 401 });
+
+    await connectDB();
+    const { id } = await params;
+    await Listing.findByIdAndDelete(id);
+    return Response.json({ success: true });
+  } catch (error) {
+    return Response.json({ error: error.message }, { status: 500 });
+  }
+}
