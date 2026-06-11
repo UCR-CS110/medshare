@@ -1,12 +1,12 @@
+"use client"
+
 import { Button } from "@/components/ui/button"
-import { getServerSession } from "next-auth/next"
-import { authOptions } from "@/app/api/auth/[...nextauth]/route"
+import { useSession } from "next-auth/react"
 import { SignOutButton } from "@/components/SignOutButton";
 import Link from "next/link";
 
-async function Navbar() {
-
-    const session = await getServerSession(authOptions);
+function Navbar() {
+    const { data: session } = useSession();
 
     return (
         <nav className="sticky top-0 z-40 w-full border-b border-separator bg-background">
@@ -34,7 +34,6 @@ async function Navbar() {
                 <div className="">
                     {session?.user ? (
                         <div className="flex items-center gap-4">
-                            {/* Clickable user name that leads to profile */}
                             <Button variant="link" asChild>
                                 <Link href="/profile">{session.user.name}</Link>
                             </Button>
