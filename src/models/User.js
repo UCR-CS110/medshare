@@ -39,6 +39,15 @@ const userSchema = new Schema({
         type: Date,
         default: Date.now,
     },
+    isVerified: {
+        type: Boolean,
+        default: false,
+    },
+    providerType: {
+        type: String,
+        enum: ['medical-clinic', 'individual-caregiver', 'non-profit-center'],
+        default: 'individual-caregiver',
+    },
 });
 
 const User = mongoose.models.User || mongoose.model('User', userSchema);
