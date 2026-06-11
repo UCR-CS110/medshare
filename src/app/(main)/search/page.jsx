@@ -34,12 +34,29 @@ import Link from "next/link"
 
 function SearchPage() {
     const [listings, setListings] = useState([]);
+    const [query, setQuery] = useState("");
+    const [minPrice, setMinPrice] = useState("");
+    const [maxPrice, setMaxPrice] = useState("");
+    const [verified, setVerified] = useState(false);
+    const [providerTypes, setProviderTypes] = useState([]);
+
+    function fetchListings() {
+        const params = new URLSearchParams();
+        if (query) params.set("query", query);
+        if (minPrice) params.set("minPrice", minPrice);
+        if (maxPrice) params.set("maxPrice", maxPrice);
+        if (verified) params.set("verified", "true");
+        if (providerTypes.length > 0) params.set("providerType", providerTypes[0]);
+
+        fetch(`/api/listings?${params.toString()}`)
+            .then(r => r.json())
+            .then(data => setListings(Array.isArray(data) ? data : []));
+    }
 
     useEffect(() => {
-        fetch("/api/listings")
-            .then(r => r.json())
-            .then(data => setListings(data));
+        fetchListings();
     }, []);
+
     return (
         <div className="pt-10 px-20">
             {/* Search form */}
@@ -48,9 +65,13 @@ function SearchPage() {
                     <InputGroupAddon>
                         <Search />
                     </InputGroupAddon>
-                    <InputGroupInput placeholder="Search..." />
+                    <InputGroupInput 
+                    placeholder="Search..." 
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    />
                 </InputGroup>
-                <Button>Search</Button>
+                <Button onClick={fetchListings}>Search</Button>
             </Field>
             {/* Main content area */}
             <div className="flex mt-5">
@@ -82,14 +103,18 @@ function SearchPage() {
                                     <InputGroupAddon>
                                         <DollarSignIcon />
                                     </InputGroupAddon>
-                                    <InputGroupInput placeholder="Min" />
+                                    <InputGroupInput placeholder="Min" 
+                                    value={minPrice}
+                                    onChange={(e) => setMinPrice(e.target.value)} />
                                 </InputGroup>
                                 <span>to</span>
                                 <InputGroup>
                                     <InputGroupAddon>
                                         <DollarSignIcon />
                                     </InputGroupAddon>
-                                    <InputGroupInput placeholder="Max" />
+                                    <InputGroupInput placeholder="Max" 
+                                    value={maxPrice}
+                                    onChange={(e) => setMaxPrice(e.target.value)} />
                                 </InputGroup>
                             </Field>
                             <Field orientation="horizontal">
@@ -101,21 +126,27 @@ function SearchPage() {
                     <FieldSet className="border border-separator rounded-md p-4 mt-4">
                         <FieldGroup className={"gap-3"}>
                             <FieldLabel>Provider Type</FieldLabel>
-                            <Field orientation="horizontal">
-                                <Checkbox id="medical-clinic" name="medical-clinic" />
-                                <FieldLabel htmlFor="medical-clinic">Medical Clinic</FieldLabel>
-                            </Field>
-                            <Field orientation="horizontal">
-                                <Checkbox id="individual-caregivers" name="individual-caregivers" />
-                                <FieldLabel htmlFor="individual-caregivers">Individual Caregivers</FieldLabel>
-                            </Field>
-                            <Field orientation="horizontal">
-                                <Checkbox id="non-profit-centers" name="non-profit-centers" />
-                                <FieldLabel htmlFor="non-profit-centers">Non-Profit Centers</FieldLabel>
-                            </Field>
+                            {[
+                                { id: "medical-clinic", label: "Medical Clinic" },
+                                { id: "individual-caregiver", label: "Individual Caregivers" },
+                                { id: "non-profit-center", label: "Non-Profit Centers" },
+                            ].map(({ id, label }) => (
+                                <Field orientation="horizontal" key={id}>
+                                    <Checkbox
+                                        id={id}
+                                        checked={providerTypes.includes(id)}
+                                        onCheckedChange={(checked) => {
+                                            setProviderTypes(prev =>
+                                                checked ? [...prev, id] : prev.filter(t => t !== id)
+                                            );
+                                        }}
+                                    />
+                                    <FieldLabel htmlFor={id}>{label}</FieldLabel>
+                                </Field>
+                            ))}
                         </FieldGroup>
                     </FieldSet>
-                    <Toggle className="mt-4 w-full" id="verified" name="verified" variant="outline">
+                    <Toggle className="mt-4 w-full" variant="outline" pressed={verified} onPressedChange={(val)=>setVerified(val)}>
                         Verified Providers Only
                     </Toggle>
                 </div>
