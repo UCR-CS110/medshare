@@ -3,6 +3,7 @@
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { FieldGroup } from "@/components/ui/field"
 
 export function CreateListingForm({
     className,
@@ -28,12 +29,14 @@ export function CreateListingForm({
     return (
         <div className={cn("flex flex-col gap-6", className)} {...props}>
             <form onSubmit={handleSubmit}>
-                <Input name="title" placeholder="Title" required />
-                <Input name="description" placeholder="Description" required />
-                <Input name="dailyRate" type="number" placeholder="Daily Rate" required />
-                <Input name="location" placeholder="Location" required />
-                <Input name="images" type="file" multiple accept="image/*" />
-                <Button type="submit">Create Listing</Button>
+                <FieldGroup>
+                    <Input name="title" placeholder="Title" required />
+                    <Input name="description" placeholder="Description" required />
+                    <Input name="dailyRate" type="number" placeholder="Daily Rate" required />
+                    <Input name="location" placeholder="Location" required />
+                    <Input name="images" type="file" multiple accept="image/*" />
+                    <Button type="submit">Create Listing</Button>
+                </FieldGroup>
             </form>
         </div>
     );
