@@ -26,12 +26,12 @@ function Navbar() {
                     </li>
                     <li>
                         <Button variant="link">
-                            <Link href="/about">About</Link>
+                            <Link href="/post">Post Equipment</Link>
                         </Button>
                     </li>
                     <li>
                         <Button variant="link">
-                            <Link href="/post">Post Equipment</Link>
+                            <Link href="/about">About</Link>
                         </Button>
                     </li>
                 </ul>
