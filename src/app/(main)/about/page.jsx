@@ -5,6 +5,11 @@ import Ben from "./about_us_imgs/mpham115.jpg";
 import Keanu from "./about_us_imgs/kwils076.jpg";
 
 
+export const metadata = {
+    title: "About MedShare",
+    description: "Learn about MedShare's mission, how it works, and the team behind it."
+}
+
 function About() {
     return (
         <div>
@@ -27,7 +32,7 @@ function About() {
                     <br />
                     <h1 className="txt-xl font-bold mt-5 ml-5">For Customers:</h1>
                         <ul className="indent-16">
-                            <li>Search for medical equipment sorted by location, price, and provider type.</li>
+                            <li>Search for medical equipment sorted by price and provider type.</li>
                             <li>Connect with verified providers to rent equipment.</li>
                             <li>Reduce costs associated with purchasing and maintaining new equipment.</li>
                         </ul>
