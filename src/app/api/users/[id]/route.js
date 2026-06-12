@@ -22,6 +22,12 @@ export async function GET(request, { params }) {
       populate: { path: "reviews" }
     });
 
+    const userData = user ? user.toObject() : null;
+    userData.listings = userData.listings || [];
+    userData.listings.forEach((listing) => {
+      listing.reviews = listing.reviews || [];
+    });
+
     if (!user) {
       return new Response(JSON.stringify({ error: "User not found" }), {
         status: 404,
@@ -29,7 +35,7 @@ export async function GET(request, { params }) {
       });
     }
 
-    return new Response(JSON.stringify(user), {
+    return new Response(JSON.stringify(userData), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
