@@ -1,8 +1,8 @@
 // About page
 import Image from "next/image";
-// import Gavin from "./about_us_imgs/gwils018.jpg";
-// import Ben from "./about_us_imgs/mpham115.jpg";
-// import Keanu from "./about_us_imgs/kwils015.jpg";
+import Gavin from "./about_us_imgs/gwils018.jpg";
+import Ben from "./about_us_imgs/mpham115.jpg";
+import Keanu from "./about_us_imgs/kwils076.jpg";
 
 
 function About() {
@@ -21,11 +21,20 @@ function About() {
             {/* How it works content will go here */}
             <h2 className="text-2xl font-bold mt-5 ml-5">About Us</h2>
             {
-                // <div className="flex">
-                //     <Image src={Gavin} alt="Image of Gavin Wilson" width={300} height={500} className="w-1/3 h-auto rounded-lg mx-5" />
-                //     <Image src={Ben} alt="Image of Ben Pham" width={300} height={500} className="w-1/3 h-auto rounded-lg mx-5" />
-                //     <Image src={Keanu} alt="Image of Keanu Wilson" width={300} height={500} className="w-1/3 h-auto rounded-lg mx-5" />
-                // </div>
+                <div className="justify-center flex">
+                    <div className="flex-col w-1/8 h-auto mx-25">
+                        <Image src={Gavin} alt="Image of Gavin Wilson" className="rounded-lg" />
+                        <p className="text-center mt-2">Gavin Wilson</p>
+                    </div>
+                    <div className="flex-col w-1/8 h-auto mx-25">
+                        <Image src={Ben} alt="Image of Ben Pham" className="rounded-lg" />
+                        <p className="text-center mt-2">Ben Pham</p>
+                    </div>
+                    <div className="flex-col w-1/8 h-auto mx-25">
+                        <Image src={Keanu} alt="Image of Keanu Wilson" className="rounded-lg" />
+                        <p className="text-center mt-2">Keanu Wilson</p>
+                    </div>
+                </div>
             }
         </div>
     );
