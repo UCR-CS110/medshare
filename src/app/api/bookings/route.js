@@ -70,6 +70,22 @@ export async function POST(request) {
         const data = await request.json();
         const { listingId, startDate, endDate } = data;
 
+        // Validate that the session user.id is a valid ObjectId and points to an existing user
+        if (!mongoose.Types.ObjectId.isValid(session.user.id)) {
+            return new Response(JSON.stringify({ error: "Invalid user ID in session" }), {
+                status: 400,
+                headers: { "Content-Type": "application/json" },
+            });
+        }
+
+        const user = await User.findById(session.user.id);
+        if (!user) {
+            return new Response(JSON.stringify({ error: "User not found" }), {
+                status: 404,
+                headers: { "Content-Type": "application/json" },
+            });
+        }
+
         if (!listingId || !startDate || !endDate) {
             return new Response(JSON.stringify({ error: "listingId, startDate, and endDate are required" }), {
                 status: 400,
