@@ -40,7 +40,7 @@ function Navbar() {
                     {session?.user ? (
                         <div className="flex items-center gap-4">
                             <Button variant="link" asChild>
-                                <Link href="/profile">{session.user.name}</Link>
+                                <Link href="/profile/me">{session.user.name}</Link>
                             </Button>
                             <SignOutButton />
                         </div>
