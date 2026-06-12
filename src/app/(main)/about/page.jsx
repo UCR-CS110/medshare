@@ -1,14 +1,10 @@
+"use client";
+
 // About page
 import Image from "next/image";
 import Gavin from "./about_us_imgs/gwils018.jpg";
 import Ben from "./about_us_imgs/mpham115.jpg";
 import Keanu from "./about_us_imgs/kwils076.jpg";
-
-
-export const metadata = {
-    title: "About MedShare",
-    description: "Learn about MedShare's mission, how it works, and the team behind it."
-}
 
 function About() {
     return (
