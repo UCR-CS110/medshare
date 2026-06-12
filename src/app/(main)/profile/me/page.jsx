@@ -7,10 +7,11 @@ import { Button } from "@/components/ui/button";
 
 export default function ProfilePage() {
     const { data: session } = useSession();
+    const [requestedBookings, setRequestedBookings] = useState([]);
     const [bookings, setBookings] = useState([]);
     const [listings, setListings] = useState([]);
     const [loading, setLoading] = useState(true);
-    const tabs = ["My Listings", "Incoming Requests"];
+    const tabs = ["My Bookings", "My Listings", "Incoming Requests"];
     const [activeTab, setActiveTab] = useState(tabs[0]);
 
     function fetchMyListings() {
@@ -18,18 +19,25 @@ export default function ProfilePage() {
             .then((res) => res.json())
             .then((data) => setListings(data))
             .catch((error) => console.error("Error fetching listings:", error));
-    }
+        }
 
     function fetchIncomingRequests() {
         fetch("/api/bookings?scope=incoming")
             .then((res) => res.json())
-            .then((data) => setBookings(data))
+            .then((data) => setRequestedBookings(data))
             .catch((error) => console.error("Error fetching incoming requests:", error));
+    }
+
+    function fetchMyBookings() {
+        fetch("/api/bookings")
+            .then((res) => res.json())
+            .then((data) => setBookings(data))
+            .catch((error) => console.error("Error fetching bookings:", error));
     }
 
     function fetchData() {
         setLoading(true);
-        Promise.all([fetchMyListings(), fetchIncomingRequests()])
+        Promise.all([fetchMyListings(), fetchIncomingRequests(), fetchMyBookings()])
             .then(() => setLoading(false))
             .catch((error) => {
                 console.error("Error fetching data:", error);
@@ -84,6 +92,22 @@ export default function ProfilePage() {
                 ))}
             </div>
 
+            {activeTab === "My Bookings" && (
+                <div className="space-y-4">
+                    {bookings.length === 0 ? (
+                        <p>You have no active bookings.</p>
+                    ) : (
+                        bookings.map((booking) => (
+                            <div key={booking._id} className="border border-gray-200 rounded-xl p-4 bg-white">
+                                <h2 className="text-xl font-semibold">{booking.listing.title}</h2>
+                                <p className="text-gray-600">Booked from: {booking.listing.seller.name}</p>
+                                <p className="text-gray-600">Status: {booking.status}</p>
+                            </div>
+                        ))
+                    )}
+                </div>
+            )}
+
             {activeTab === "My Listings" && (
                 <div className="space-y-4">
                     {listings.length === 0 ? (
@@ -101,10 +125,10 @@ export default function ProfilePage() {
 
             {activeTab === "Incoming Requests" && (
                 <div className="space-y-4">
-                    {bookings.length === 0 ? (
+                    {requestedBookings.length === 0 ? (
                         <p>You have no incoming booking requests.</p>
                     ) : (
-                        bookings.map((booking) => (
+                        requestedBookings.map((booking) => (
                             <div key={booking._id} className="border border-gray-200 rounded-xl p-4 bg-white">
                                 <h2 className="text-xl font-semibold">{booking.listing.title}</h2>
                                 <p className="text-gray-600">Requested by: {booking.renter.name}</p>
