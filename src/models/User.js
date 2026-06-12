@@ -21,11 +21,11 @@ const userSchema = new Schema({
         maxlength: 500,
         default: '',
     },
-    avgRating: {
-        type: Number,
-        default: 0,
-        max: 5,
-    },
+    // avgRating: {
+    //     type: Number,
+    //     default: 0,
+    //     max: 5,
+    // },
     role: {
         type: String,
         enum: ['user', 'admin'],
@@ -48,6 +48,23 @@ const userSchema = new Schema({
         enum: ['medical-clinic', 'individual-caregiver', 'non-profit-center'],
         default: 'individual-caregiver',
     },
+}, {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+});
+
+userSchema.virtual('listings', {
+    ref: 'Listing',
+    localField: '_id',
+    foreignField: 'seller',
+});
+
+userSchema.virtual('avgRating').get(function() {
+    if (!this.listings || this.listings.length === 0) {
+        return 0;
+    }
+    const totalRating = this.listings.reduce((sum, listing) => sum + (listing.avgRating || 0), 0);
+    return totalRating / this.listings.length;
 });
 
 const User = mongoose.models.User || mongoose.model('User', userSchema);

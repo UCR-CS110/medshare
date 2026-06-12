@@ -1,3 +1,8 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+
 import Image from "next/image";
 import {
   Card,
@@ -18,6 +23,17 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 
 function Home() {
+  const router = useRouter();
+  const [searchQuery, setSearchQuery] = useState("");
+
+  function handleSearch() {
+    if (!searchQuery.trim()) {
+      return;
+    }
+    // Redirect to search results page with query parameters
+    router.push(`/search?query=${searchQuery}`);
+  }
+
   return (
     <div>
       <div className="flex px-20">
@@ -26,9 +42,13 @@ function Home() {
           <p className="text-lg text-muted-foreground my-4"> Connecting patients with affordable, pre-vetted medical supplies. Secure, clinical-grade logistics and a community built on trust.</p>
           <FieldGroup className="grid grid-cols-2 gap-4">
             <Field orientation="horizontal">
-              <Input className="min-w-64" placeholder="Desired Equipment" />
-              <Input className="min-w-64" placeholder="Location" />
-              <Button>Search</Button>
+              <Input 
+                className="min-w-64" 
+                placeholder="Desired Equipment" 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <Button onClick={handleSearch}>Search</Button>
             </Field>
           </FieldGroup>
         </div>

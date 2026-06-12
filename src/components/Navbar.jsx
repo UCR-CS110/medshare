@@ -34,6 +34,13 @@ function Navbar() {
                             <Link href="/post">Post Equipment</Link>
                         </Button>
                     </li>
+                    {session?.user?.role === "admin" ? (
+                        <li>
+                            <Button variant="link">
+                                <Link href="/admin">Admin</Link>
+                            </Button>
+                        </li>
+                    ) : null}
                 </ul>
                 {/* Sign out or sign in button */}
                 <div className="">

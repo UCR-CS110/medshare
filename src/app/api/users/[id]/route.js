@@ -17,7 +17,16 @@ export async function GET(request, { params }) {
   try {
     await connectDB();
 
-    const user = await User.findById(id).select("-password");
+    const user = await User.findById(id).select("-password").populate({
+      path: "listings",
+      populate: { path: "reviews" }
+    });
+
+    const userData = user ? user.toObject() : null;
+    userData.listings = userData.listings || [];
+    userData.listings.forEach((listing) => {
+      listing.reviews = listing.reviews || [];
+    });
 
     if (!user) {
       return new Response(JSON.stringify({ error: "User not found" }), {
@@ -26,7 +35,7 @@ export async function GET(request, { params }) {
       });
     }
 
-    return new Response(JSON.stringify(user), {
+    return new Response(JSON.stringify(userData), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
@@ -66,11 +75,11 @@ export async function PATCH(request, { params }) {
     await connectDB();
 
     const data = await request.json();
-    const { name, email, bio } = data;
+    const { name, email, bio, providerType } = data;
 
     const updatedUser = await User.findByIdAndUpdate(
       id,
-      { name, email, bio, updatedAt: Date.now() },
+      { name, email, bio, providerType, updatedAt: Date.now() },
       { returnDocument: "after", runValidators: true }
     ).select("-password");
 

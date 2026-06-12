@@ -21,8 +21,8 @@ Search page:
 
 ## Tools Used
 - **Frontend**: React, Next.js, Tailwind CSS, shadcn/ui components
-- **Backend**: Node.js, Next.js API routes (planned)
-- **Database**: MongoDB Atlas, Mongoose (planned)
+- **Backend**: Node.js, Next.js API routes
+- **Database**: MongoDB Atlas, Mongoose
 
 ## How to Run
 1. Clone the repository
@@ -39,6 +39,10 @@ Search page:
 `npm run dev`
 ```
 4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+
+## Generative AI Disclosure
+Part of this code was created with the assistance of AI tools, specifically the tailwind styling and functions on the admin page, as well as the tailwind styling on the profile page. Additionally, all the team members have the in-editor autocomplete feature enabled, which also uses AI for code suggestions and completions. All auto-complete suggestions and pages created with the help of AI were reviewed by the team members.
 
 <hr>
 

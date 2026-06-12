@@ -4,6 +4,7 @@ import { use, useState, useEffect } from "react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { ReviewForm } from "@/components/review-form";
+import { useRouter } from "next/navigation";
 
 function Placeholder({ className = "", label = "Image" }) {
   return (
@@ -37,6 +38,7 @@ function ImageGallery() {
 
 function PricingBox({ listing }) {
   const { data: session } = useSession();
+  const router = useRouter();
   const [requested, setRequested] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -167,14 +169,16 @@ function ProductDetails({ listing, avgRating, reviewCount }) {
   );
 }
 
-function ProviderSection({ seller }) {
+function ProviderSection({ seller, router }) {
   return (
     <section className="mt-10 pt-8 border-t border-gray-200">
       <h2 className="text-xl font-bold text-gray-900 mb-4">About the Provider</h2>
       <div className="bg-white border border-gray-200 rounded-xl p-5 flex flex-col sm:flex-row gap-4 items-start">
         <Placeholder className="w-16 h-16 rounded-full shrink-0 border border-gray-200 text-xs" label="Photo" />
         <div className="flex-1 space-y-1">
-          <p className="font-bold text-gray-900">{seller?.name ?? "Provider"}</p>
+          <p className="font-bold text-gray-900 cursor-pointer" onClick={() => router.push("/profile/" + seller._id)}>
+            {seller?.name ?? "Provider"}
+          </p>
           <p className="text-sm text-gray-500">{seller?.bio || "No bio available."}</p>
         </div>
       </div>
@@ -231,6 +235,8 @@ export default function ListingDetailPage({ params }) {
     fetchReviews();
   }, [id]);
 
+  const router = useRouter();
+
   if (loading) return <div className="p-10 text-center text-gray-400">Loading...</div>;
   if (!listing || listing.error) return <div className="p-10 text-center text-red-400">Listing not found.</div>;
 
@@ -248,7 +254,7 @@ export default function ListingDetailPage({ params }) {
           <ProductDetails listing={listing} avgRating={avgRating} reviewCount={reviewCount} />
         </div>
 
-        <ProviderSection seller={listing.seller} />
+        <ProviderSection seller={listing.seller} router={router} />
 
         <section className="mt-10 pt-8 border-t border-gray-200">
           <h2 className="text-xl font-bold text-gray-900 mb-4">Reviews</h2>
