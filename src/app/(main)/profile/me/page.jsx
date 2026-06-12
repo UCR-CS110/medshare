@@ -19,6 +19,49 @@ export default function ProfilePage() {
     const [activeTab, setActiveTab] = useState(tabs[0]);
     const router = useRouter();
 
+    function updateBio(newBio) {
+        return fetch("/api/users/" + session.user.id, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify({ bio: newBio }),
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                if (data.error) {
+                    console.error("Error updating bio:", data.error);
+                } else {
+                    setUserInfo((prev) => ({ ...prev, bio: newBio }));
+                }
+            })
+            .catch((error) => console.error("Error updating bio:", error));
+    }
+
+    function updateProviderType(newType) {
+        return fetch("/api/users/" + session.user.id, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify({ providerType: newType }),
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                if (data.error) {
+                    console.error("Error updating provider type:", data.error);
+                } else {
+                    setUserInfo((prev) => ({ ...prev, providerType: newType }));
+                    setProviderLabel(
+                        {
+                            "medical-clinic": "Medical Clinic",
+                            "individual-caregiver": "Individual Caregiver",
+                            "non-profit-center": "Non-Profit Center",
+                        }[newType] || "Provider"
+                    );
+                }
+            })
+            .catch((error) => console.error("Error updating provider type:", error));
+    }
+
     function fetchMyListings() {
         return fetch("/api/users/" + session.user.id + "/listings")
             .then((res) => res.json())
@@ -130,10 +173,28 @@ export default function ProfilePage() {
                                     </div>
                                     <CardDescription className="mt-1">
                                         {userInfo.email}
-                                        <p className="mt-1 text-sm leading-6 text-slate-700">{userInfo.bio || "No public bio has been added yet."}</p>
+                                        <div>
+                                            <p className="mt-1 text-sm leading-6 text-slate-700">{userInfo.bio || "No public bio has been added yet."}</p>
+                                            <Button variant="outline" size="sm" className="mt-2" onClick={() => {
+                                                const newBio = prompt("Update your bio:", userInfo.bio);
+                                                if (newBio !== null) {
+                                                    updateBio(newBio);
+                                                }
+                                            }}>
+                                                Update Bio
+                                            </Button>
+                                        </div>
                                         <div className="flex flex-wrap gap-2 pt-2 text-sm text-slate-600">
                                             <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-3 py-1">
                                                 <BriefcaseMedical className="size-4" /> {providerLabel}
+                                                <Button variant="outline" size="sm" className="ml-2" onClick={() => {
+                                                    const newType = prompt("Update your provider type (medical-clinic, individual-caregiver, non-profit-center):", userInfo.providerType);
+                                                    if (newType !== null) {
+                                                        updateProviderType(newType);
+                                                    }
+                                                }}>
+                                                    Update
+                                                </Button>
                                             </span>
                                             <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-3 py-1">
                                                 <Star className="size-4 text-amber-500" /> {userInfo.avgRating ? userInfo.avgRating.toFixed(1) : "New"}

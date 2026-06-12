@@ -69,11 +69,11 @@ export async function PATCH(request, { params }) {
     await connectDB();
 
     const data = await request.json();
-    const { name, email, bio } = data;
+    const { name, email, bio, providerType } = data;
 
     const updatedUser = await User.findByIdAndUpdate(
       id,
-      { name, email, bio, updatedAt: Date.now() },
+      { name, email, bio, providerType, updatedAt: Date.now() },
       { returnDocument: "after", runValidators: true }
     ).select("-password");
 
