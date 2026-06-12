@@ -225,7 +225,9 @@ export default function ProfilePage() {
                                     bookings.map((booking) => (
                                         <Card key={booking._id} className="border-gray-200">
                                             <CardHeader>
-                                                <CardTitle>{booking.listing.title}</CardTitle>
+                                                <CardTitle className="cursor-pointer" onClick={() => router.push("/listings/" + booking.listing._id)}>
+                                                    {booking.listing.title}
+                                                </CardTitle>
                                                 <CardDescription className="cursor-pointer" onClick={() => router.push("/profile/" + booking.listing.seller._id)}>
                                                     Booked from: {booking.listing.seller?.name ?? "Unknown seller"}
                                                 </CardDescription>
@@ -270,7 +272,9 @@ export default function ProfilePage() {
                                     requestedBookings.map((booking) => (
                                         <Card key={booking._id} className="border-gray-200">
                                             <CardHeader>
-                                                <CardTitle>{booking.listing.title}</CardTitle>
+                                                <CardTitle className="cursor-pointer" onClick={() => router.push("/listings/" + booking.listing._id)}>
+                                                    {booking.listing.title}
+                                                </CardTitle>
                                                 <CardDescription className="cursor-pointer" onClick={() => router.push("/profile/" + booking.renter._id)}>
                                                     Requested from: {booking.renter?.name ?? "Unknown renter"}
                                                 </CardDescription>
