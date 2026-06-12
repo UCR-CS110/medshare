@@ -70,11 +70,54 @@ export async function POST(request) {
         const data = await request.json();
         const { listingId, startDate, endDate } = data;
 
+        if (!listingId || !startDate || !endDate) {
+            return new Response(JSON.stringify({ error: "listingId, startDate, and endDate are required" }), {
+                status: 400,
+                headers: { "Content-Type": "application/json" },
+            });
+        }
+
+        if (!mongoose.Types.ObjectId.isValid(listingId)) {
+            return new Response(JSON.stringify({ error: "Invalid listingId" }), {
+                status: 400,
+                headers: { "Content-Type": "application/json" },
+            });
+        }
+
+        const listing = await Listing.findById(listingId);
+        if (!listing) {
+            return new Response(JSON.stringify({ error: "Listing not found" }), {
+                status: 404,
+                headers: { "Content-Type": "application/json" },
+            });
+        }
+
+        const parsedStart = new Date(startDate);
+        const parsedEnd = new Date(endDate);
+
+        if (Number.isNaN(parsedStart.getTime()) || Number.isNaN(parsedEnd.getTime())) {
+            return new Response(JSON.stringify({ error: "Invalid startDate or endDate" }), {
+                status: 400,
+                headers: { "Content-Type": "application/json" },
+            });
+        }
+
+        if (parsedEnd <= parsedStart) {
+            return new Response(JSON.stringify({ error: "endDate must be after startDate" }), {
+                status: 400,
+                headers: { "Content-Type": "application/json" },
+            });
+        }
+
+        const totalDays = Math.max(1, Math.ceil((parsedEnd - parsedStart) / (1000 * 60 * 60 * 24)));
+
         const newBooking = new Booking({
-            listing: mongoose.Types.ObjectId(listingId),
-            renter: mongoose.Types.ObjectId(session.user.id),
-            startDate: new Date(startDate),
-            endDate: new Date(endDate),
+            listing: listing._id,
+            renter: session.user.id,
+            startDate: parsedStart,
+            endDate: parsedEnd,
+            totalPrice: totalDays * listing.dailyRate,
+            status: "pending",
         });
 
         await newBooking.save();
