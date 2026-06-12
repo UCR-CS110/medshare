@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 
 
 export default function ProfilePage() {
-    const { data: session } = useSession();
+    const { data: session, status } = useSession();
     const [requestedBookings, setRequestedBookings] = useState([]);
     const [bookings, setBookings] = useState([]);
     const [listings, setListings] = useState([]);
@@ -15,34 +15,35 @@ export default function ProfilePage() {
     const [activeTab, setActiveTab] = useState(tabs[0]);
 
     function fetchMyListings() {
-        fetch("/api/users/" + session.user.id + "/listings")
+        return fetch("/api/users/" + session.user.id + "/listings")
             .then((res) => res.json())
             .then((data) => setListings(data))
             .catch((error) => console.error("Error fetching listings:", error));
         }
 
     function fetchIncomingRequests() {
-        fetch("/api/bookings?scope=incoming")
+        return fetch("/api/bookings?scope=incoming")
             .then((res) => res.json())
             .then((data) => setRequestedBookings(data))
             .catch((error) => console.error("Error fetching incoming requests:", error));
     }
 
     function fetchMyBookings() {
-        fetch("/api/bookings")
+        return fetch("/api/bookings")
             .then((res) => res.json())
             .then((data) => setBookings(data))
             .catch((error) => console.error("Error fetching bookings:", error));
     }
 
-    function fetchData() {
+    async function fetchData() {
         setLoading(true);
-        Promise.all([fetchMyListings(), fetchIncomingRequests(), fetchMyBookings()])
-            .then(() => setLoading(false))
-            .catch((error) => {
-                console.error("Error fetching data:", error);
-                setLoading(false);
-            });
+        try {
+            await Promise.all([fetchMyListings(), fetchIncomingRequests(), fetchMyBookings()]);
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        } finally {
+            setLoading(false);
+        }
     }
 
     async function changeBookingStatus(bookingId, newStatus) {
@@ -62,20 +63,29 @@ export default function ProfilePage() {
             }
         } catch (error) {
             console.error("Error updating booking status:", error);
-        } finally {
-            fetchData();
         }
+
+        fetchData();
     } 
             
 
     useEffect(() => {
-        if (!session?.user?.id) return;
+        if (status !== "authenticated") {
+            if (status === "unauthenticated") {
+                setLoading(false);
+            }
+            return;
+        }
 
         fetchData();
-    }, []);
+    }, [session?.user?.id, status]);
 
-    if (loading) {
+    if (status === "loading" || loading) {
         return <div>Loading...</div>;
+    }
+
+    if (status === "unauthenticated") {
+        return <div className="p-4">Please sign in to view your profile.</div>;
     }
     return (
         <div className="max-w-4xl mx-auto p-4">
@@ -100,7 +110,7 @@ export default function ProfilePage() {
                         bookings.map((booking) => (
                             <div key={booking._id} className="border border-gray-200 rounded-xl p-4 bg-white">
                                 <h2 className="text-xl font-semibold">{booking.listing.title}</h2>
-                                <p className="text-gray-600">Booked from: {booking.listing.seller.name}</p>
+                                <p className="text-gray-600">Booked from: {booking.listing?.seller?.name ?? "Unknown provider"}</p>
                                 <p className="text-gray-600">Status: {booking.status}</p>
                             </div>
                         ))
@@ -131,7 +141,7 @@ export default function ProfilePage() {
                         requestedBookings.map((booking) => (
                             <div key={booking._id} className="border border-gray-200 rounded-xl p-4 bg-white">
                                 <h2 className="text-xl font-semibold">{booking.listing.title}</h2>
-                                <p className="text-gray-600">Requested by: {booking.renter.name}</p>
+                                <p className="text-gray-600">Requested by: {booking.renter?.name ?? "Unknown renter"}</p>
                                 <p className="text-gray-600">Status: {booking.status}</p>
                                 {booking.status === "pending" && (
                                     <div className="mt-4 space-x-2">
