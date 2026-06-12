@@ -3,6 +3,7 @@
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Card, CardHeader, CardTitle, CardAction, CardContent, CardFooter, CardDescription } from "@/components/ui/card";
 
 
 export default function ProfilePage() {
@@ -108,11 +109,13 @@ export default function ProfilePage() {
                         <p>You have no active bookings.</p>
                     ) : (
                         bookings.map((booking) => (
-                            <div key={booking._id} className="border border-gray-200 rounded-xl p-4 bg-white">
-                                <h2 className="text-xl font-semibold">{booking.listing.title}</h2>
-                                <p className="text-gray-600">Booked from: {booking.listing?.seller?.name ?? "Unknown provider"}</p>
-                                <p className="text-gray-600">Status: {booking.status}</p>
-                            </div>
+                            <Card key={booking._id} className="border-gray-200">
+                                <CardHeader>
+                                    <CardTitle>{booking.listing.title}</CardTitle>
+                                    <CardDescription>Booked from: {booking.listing.seller?.name ?? "Unknown seller"}</CardDescription>
+                                    <p className="text-gray-600">Status: {booking.status}</p>
+                                </CardHeader>
+                            </Card>
                         ))
                     )}
                 </div>
@@ -124,10 +127,12 @@ export default function ProfilePage() {
                         <p>You have no active listings.</p>
                     ) : (
                         listings.map((listing) => (
-                            <div key={listing._id} className="border border-gray-200 rounded-xl p-4 bg-white">
-                                <h2 className="text-xl font-semibold">{listing.title}</h2>
-                                <p className="text-gray-600">{listing.description}</p>
-                            </div>
+                            <Card key={listing._id} className="border-gray-200">
+                                <CardHeader>
+                                    <CardTitle>{listing.title}</CardTitle>
+                                    <CardDescription>{listing.description}</CardDescription>
+                                </CardHeader>
+                            </Card>
                         ))
                     )}
                 </div>
@@ -139,17 +144,33 @@ export default function ProfilePage() {
                         <p>You have no incoming booking requests.</p>
                     ) : (
                         requestedBookings.map((booking) => (
-                            <div key={booking._id} className="border border-gray-200 rounded-xl p-4 bg-white">
-                                <h2 className="text-xl font-semibold">{booking.listing.title}</h2>
-                                <p className="text-gray-600">Requested by: {booking.renter?.name ?? "Unknown renter"}</p>
-                                <p className="text-gray-600">Status: {booking.status}</p>
-                                {booking.status === "pending" && (
-                                    <div className="mt-4 space-x-2">
-                                        <Button onClick={() => changeBookingStatus(booking._id, "confirmed")}>Approve</Button>
-                                        <Button variant="outline" onClick={() => changeBookingStatus(booking._id, "cancelled")}>Reject</Button>
-                                    </div>
-                                )}
-                            </div>
+                            <Card key={booking._id} className="border-gray-200">
+                                <CardHeader>
+                                    <CardTitle>{booking.listing.title}</CardTitle>
+                                    <CardDescription>Requested from: {booking.renter?.name ?? "Unknown renter"}</CardDescription>
+                                    <CardDescription>Status: {booking.status}</CardDescription>
+                                    <CardAction className="flex space-x-2">
+                                        {booking.status === "pending" && (
+                                            <>
+                                                <Button variant="outline" onClick={() => changeBookingStatus(booking._id, "approved")}>
+                                                    Approve
+                                                </Button>
+                                                <Button variant="destructive" onClick={() => changeBookingStatus(booking._id, "cancelled")}>
+                                                    Reject
+                                                </Button>
+                                            </>
+                                        )}
+                                    </CardAction>
+                                </CardHeader>
+                                <CardContent>
+                                    <p className="text-gray-600">{booking.listing.description}</p>
+                                </CardContent>
+                                <CardFooter>
+                                    <p className="text-sm text-gray-500">
+                                        Booking from {new Date(booking.startDate).toLocaleDateString()} to {new Date(booking.endDate).toLocaleDateString()}
+                                    </p>
+                                </CardFooter>
+                            </Card>
                         ))
                     )}
                 </div>
