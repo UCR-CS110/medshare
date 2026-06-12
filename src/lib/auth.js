@@ -28,21 +28,22 @@ export const authOptions = {
       async authorize(credentials) {
         if (credentials.email && credentials.password) {
           await connectDB();
+          const email = credentials.email.toLowerCase();
 
-          const user = await User.findOne({ email: credentials.email }).select("+password");
+          const user = await User.findOne({ email }).select("+password");
           if (!user) {
-            console.log("User not found with email:", credentials.email);
+            console.log("User not found with email:", email);
             throw new Error("User not found");
           }
 
           const isValid = await bcrypt.compare(credentials.password, user.password);
           if (!isValid) {
-            console.log("Invalid password for email:", credentials.email);
+            console.log("Invalid password for email:", email);
             throw new Error("Invalid password");
           }
 
           console.log("User authenticated:", user.email);
-          return { id: user._id, name: user.name, email: user.email };
+          return { id: user._id, name: user.name, email: user.email, role: user.role };
         }
         throw new Error("Invalid credentials");
       },
@@ -75,14 +76,34 @@ export const authOptions = {
       return true;
     },
     async jwt({ token, user }) {
-        if (user) {
-            token.id = user.id;
+      if (user) {
+        token.id = user.id ?? token.id;
+        token.name = user.name ?? token.name;
+        token.email = user.email?.toLowerCase() ?? token.email;
+        token.role = user.role ?? token.role ?? "user";
+      }
+
+      if (token.email) {
+        await connectDB();
+        const dbUser = await User.findOne({ email: token.email.toLowerCase() }).select("_id name email role");
+
+        if (dbUser) {
+          token.id = dbUser._id.toString();
+          token.name = dbUser.name;
+          token.email = dbUser.email;
+          token.role = dbUser.role;
         }
-        return token;
+      }
+
+      token.role = token.role ?? "user";
+      return token;
     },
     async session({ session, token }) {
         if (token) {
             session.user.id = token.id;
+        session.user.name = token.name ?? session.user.name;
+        session.user.email = token.email ?? session.user.email;
+        session.user.role = token.role ?? "user";
         }
         return session;
     },
