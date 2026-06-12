@@ -17,7 +17,10 @@ export async function GET(request, { params }) {
   try {
     await connectDB();
 
-    const user = await User.findById(id).select("-password");
+    const user = await User.findById(id).select("-password").populate({
+      path: "listings",
+      populate: { path: "reviews" }
+    });
 
     if (!user) {
       return new Response(JSON.stringify({ error: "User not found" }), {

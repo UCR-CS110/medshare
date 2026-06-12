@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import Review from './Review';
 const Schema = mongoose.Schema;
 
 const listingSchema = new Schema({
@@ -32,6 +33,23 @@ const listingSchema = new Schema({
         type: Date,
         default: Date.now,
     },
+}, {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+});
+
+listingSchema.virtual('reviews', {
+    ref: 'Review',
+    localField: '_id',
+    foreignField: 'listing',
+});
+
+listingSchema.virtual('avgRating').get(function() {
+    if (this.reviews && this.reviews.length > 0) {
+        const total = this.reviews.reduce((sum, review) => sum + review.rating, 0);
+        return total / this.reviews.length;
+    }
+    return 0;
 });
 
 const Listing = mongoose.models.Listing || mongoose.model('Listing', listingSchema);
