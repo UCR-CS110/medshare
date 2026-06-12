@@ -38,7 +38,10 @@ export async function GET(request) {
         }
 
         const bookings = await Booking.find({ renter: userId })
-            .populate("listing")
+            .populate({
+                path: "listing",
+                populate: { path: "seller", select: "name bio" },
+            })
             .sort({ createdAt: -1 });
 
         return new Response(JSON.stringify(bookings), {
