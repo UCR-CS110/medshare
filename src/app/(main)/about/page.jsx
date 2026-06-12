@@ -59,15 +59,18 @@ function About() {
                     <div>
                         <h3 className="text-xl font-bold mt-5 ml-5 indent-8">Gavin Wilson</h3>
                             <p className="text-lg text-muted-foreground my-4 ml-5 indent-16">
-
+                                I am Gavin Wilson, a major in Computer Science with a particular interest in backend development. 
+                                I like to work out complex logic and enjoy seeing the results of my hard work, which is why I enjoyed working on MedShare.
                             </p>
                         <h3 className="text-xl font-bold mt-5 ml-5 indent-8">Ben Pham</h3>
                             <p className="text-lg text-muted-foreground my-4 ml-5 indent-16">
-                            
+                                My name is Minh (Preferred to be called Ben) Pham, and I am a Computer Science Major focusing on Data Science and Analytics.  
+                                I wish to use my abilties in Data Science and Analytics in order to help people lives with Data which is why I am doing MedShare.
                             </p>
                         <h3 className="text-xl font-bold mt-5 ml-5 indent-8">Keanu Wilson</h3>
                             <p className="text-lg text-muted-foreground my-4 ml-5 indent-16">
-                            
+                                I am Keanu Wilson, and I am a Computer Science Major who is looking to use my skills in the are of Software Development. 
+                                I want to be able to create something that will not only help people, but will be a good experience for me to create it.
                             </p>
                     </div>
                 </div>
