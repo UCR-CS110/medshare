@@ -209,7 +209,7 @@ export default function ProfilePage() {
                                                 <CardAction className="flex space-x-2">
                                                     {booking.status === "pending" && (
                                                         <>
-                                                            <Button variant="outline" onClick={() => changeBookingStatus(booking._id, "approved")}>
+                                                            <Button variant="outline" onClick={() => changeBookingStatus(booking._id, "confirmed")}>
                                                                 Approve
                                                             </Button>
                                                             <Button variant="destructive" onClick={() => changeBookingStatus(booking._id, "cancelled")}>
