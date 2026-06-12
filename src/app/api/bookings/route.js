@@ -1,11 +1,13 @@
 import mongoose from "mongoose";
 import connectDB from "@/lib/db";
 import Booking from "@/models/Booking";
+import Listing from "@/models/Listing";
+import User from "@/models/User";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 
 // Get all bookings for the authenticated user
-export async function GET(request, { params }) {
+export async function GET(request) {
     const session = await getServerSession(authOptions);
     if (!session) {
         return new Response(JSON.stringify({ error: "Unauthorized" }), {
@@ -18,7 +20,26 @@ export async function GET(request, { params }) {
         await connectDB();
 
         const userId = session.user.id;
-        const bookings = await Booking.find({ renter: userId }).populate("listing");
+        const url = new URL(request.url);
+        const scope = url.searchParams.get("scope");
+
+        if (scope === "incoming") {
+            const ownedListings = await Listing.find({ seller: userId }).select("_id");
+            const listingIds = ownedListings.map((listing) => listing._id);
+            const bookings = await Booking.find({ listing: { $in: listingIds } })
+                .populate("listing")
+                .populate("renter")
+                .sort({ createdAt: -1 });
+
+            return new Response(JSON.stringify(bookings), {
+                status: 200,
+                headers: { "Content-Type": "application/json" },
+            });
+        }
+
+        const bookings = await Booking.find({ renter: userId })
+            .populate("listing")
+            .sort({ createdAt: -1 });
 
         return new Response(JSON.stringify(bookings), {
             status: 200,
