@@ -146,7 +146,7 @@ export default function ProfilePage() {
                         <p>You have no active listings.</p>
                     ) : (
                         listings.map((listing) => (
-                            <Card key={listing._id} className="border-gray-200">
+                            <Card key={listing._id} className="border-gray-200 cursor-pointer" onClick={() => window.location.href = "/listings/" + listing._id}>
                                 <CardHeader>
                                     <CardTitle>{listing.title}</CardTitle>
                                     <CardDescription>{listing.description}</CardDescription>
