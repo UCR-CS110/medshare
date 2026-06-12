@@ -165,11 +165,19 @@ export default function ProfilePage() {
                                         <Card key={booking._id} className="border-gray-200">
                                             <CardHeader>
                                                 <CardTitle>{booking.listing.title}</CardTitle>
-                                                <CardDescription onClick={() => router.push("/profile/" + booking.listing.seller._id)}>
+                                                <CardDescription className="cursor-pointer" onClick={() => router.push("/profile/" + booking.listing.seller._id)}>
                                                     Booked from: {booking.listing.seller?.name ?? "Unknown seller"}
                                                 </CardDescription>
                                                 <p className="text-gray-600">Status: {booking.status}</p>
                                             </CardHeader>
+                                            <CardContent>
+                                                <p className="text-gray-600">{booking.listing.description}</p>
+                                            </CardContent>
+                                            <CardFooter>
+                                                <p className="text-sm text-gray-500">
+                                                    Booking from {new Date(booking.startDate).toLocaleDateString()} to {new Date(booking.endDate).toLocaleDateString()}
+                                                </p>
+                                            </CardFooter>
                                         </Card>
                                     ))
                                 )}
