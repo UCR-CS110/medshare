@@ -5,8 +5,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardAction, CardContent, CardFooter, CardDescription } from "@/components/ui/card";
-import { BadgeCheck, Mail, UserRound, BriefcaseMedical, Star, MapPin } from "lucide-react";
-import Link from "next/link";
+import { BadgeCheck, Mail, UserRound, BriefcaseMedical, Star} from "lucide-react";
 
 export default function ProfilePage() {
     const { data: session, status } = useSession();
@@ -15,6 +14,7 @@ export default function ProfilePage() {
     const [listings, setListings] = useState([]);
     const [userInfo, setUserInfo] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [providerLabel, setProviderLabel] = useState("");
     const tabs = ["My Bookings", "My Listings", "Incoming Requests"];
     const [activeTab, setActiveTab] = useState(tabs[0]);
     const router = useRouter();
@@ -45,6 +45,13 @@ export default function ProfilePage() {
             .then((res) => res.json())
             .then((data) => {
                 setUserInfo(data);
+                setProviderLabel(
+                    {
+                        "medical-clinic": "Medical Clinic",
+                        "individual-caregiver": "Individual Caregiver",
+                        "non-profit-center": "Non-Profit Center",
+                    }[data.providerType] || "Provider"
+                );
             })
             .catch((error) => console.error("Error fetching user info:", error));
     }
@@ -101,6 +108,7 @@ export default function ProfilePage() {
     if (status === "unauthenticated") {
         return <div className="p-4">Please sign in to view your profile.</div>;
     }
+
     return (
         <div className="bg-slate-50 text-slate-900">
             <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
@@ -125,7 +133,7 @@ export default function ProfilePage() {
                                         <p className="mt-1 text-sm leading-6 text-slate-700">{userInfo.bio || "No public bio has been added yet."}</p>
                                         <div className="flex flex-wrap gap-2 pt-2 text-sm text-slate-600">
                                             <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-3 py-1">
-                                                <BriefcaseMedical className="size-4" /> {userInfo.providerLabel}
+                                                <BriefcaseMedical className="size-4" /> {providerLabel}
                                             </span>
                                             <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-3 py-1">
                                                 <Star className="size-4 text-amber-500" /> {userInfo.avgRating ? userInfo.avgRating.toFixed(1) : "New"}
@@ -136,7 +144,7 @@ export default function ProfilePage() {
                             </div>
                     </CardHeader>
                     <div className="max-w-4xl mx-auto p-4">
-                        <div className="flex space-x-4 mb-6">
+                        <div className="flex items-center justify-center space-x-4 mb-6">
                             {tabs.map((tab) => (
                                 <Button
                                     key={tab}
