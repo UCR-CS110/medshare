@@ -2,9 +2,9 @@ import connectDB from "@/lib/db";
 import Listing from "@/models/Listing";
 import Review from "@/models/Review";
 import User from "@/models/User";
+import Booking from "@/models/Booking";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
-
 
 export async function GET(req) {
  try {
@@ -15,6 +15,7 @@ export async function GET(req) {
     const maxPrice = searchParams.get("maxPrice");
     const verified = searchParams.get("verified");
     const providerType = searchParams.get("providerType");
+    const includeUnavailable = searchParams.get("includeUnavailable") === "true";
     const page = parseInt(searchParams.get("page") || "1");
     const limit = 6;
     const skip = (page - 1) * limit;
@@ -38,6 +39,10 @@ export async function GET(req) {
     let sellerFilter = {};
     if (verified === "true") sellerFilter.isVerified = true;
     if (providerType) sellerFilter.providerType = providerType;
+    if (!includeUnavailable) {
+      const unavailableListings = await Booking.find({ status: "confirmed" }).distinct("listing");
+      filter._id = { $nin: unavailableListings };
+    }
 
     if (Object.keys(sellerFilter).length > 0) {
       const User = (await import("@/models/User")).default;
