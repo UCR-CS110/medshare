@@ -11,6 +11,7 @@ export default function ProfilePage() {
     const [requestedBookings, setRequestedBookings] = useState([]);
     const [bookings, setBookings] = useState([]);
     const [listings, setListings] = useState([]);
+    const [userInfo, setUserInfo] = useState(null);
     const [loading, setLoading] = useState(true);
     const tabs = ["My Bookings", "My Listings", "Incoming Requests"];
     const [activeTab, setActiveTab] = useState(tabs[0]);
@@ -36,10 +37,19 @@ export default function ProfilePage() {
             .catch((error) => console.error("Error fetching bookings:", error));
     }
 
+    function fetchUserInfo() {
+        return fetch("/api/users/" + session.user.id)
+            .then((res) => res.json())
+            .then((data) => {
+                setUserInfo(data);
+            })
+            .catch((error) => console.error("Error fetching user info:", error));
+    }
+
     async function fetchData() {
         setLoading(true);
         try {
-            await Promise.all([fetchMyListings(), fetchIncomingRequests(), fetchMyBookings()]);
+            await Promise.all([fetchMyListings(), fetchIncomingRequests(), fetchMyBookings(), fetchUserInfo()]);
         } catch (error) {
             console.error("Error fetching data:", error);
         } finally {
@@ -91,6 +101,15 @@ export default function ProfilePage() {
     return (
         <div className="max-w-4xl mx-auto p-4">
             <h1 className="text-3xl font-bold mb-6">My Profile</h1>
+            {/* Display user information */ }
+            <Card className="mb-6">
+                <CardHeader>
+                    <CardTitle>{userInfo?.name || session.user.name}</CardTitle>
+                    <CardDescription>{userInfo?.email || session.user.email}</CardDescription>
+                    <CardDescription>{userInfo?.bio || session.user.bio}</CardDescription>
+                </CardHeader>
+            </Card>
+
             <div className="flex space-x-4 mb-6">
                 {tabs.map((tab) => (
                     <Button
