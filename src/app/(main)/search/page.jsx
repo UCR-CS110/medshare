@@ -1,6 +1,7 @@
 "use client";
-import { useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 // Search page
 import { Button } from "@/components/ui/button"
 import { Field, FieldSet, FieldGroup, FieldLabel } from "@/components/ui/field"
@@ -17,7 +18,7 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
-import { 
+import {
     Pagination,
     PaginationContent,
     PaginationItem,
@@ -52,16 +53,31 @@ function SearchPage() {
         params.set("page", pg);
 
         fetch(`/api/listings?${params.toString()}`)
-        .then(r => r.json())
-        .then(data => {
-            setListings(Array.isArray(data.listings) ? data.listings : []);
-            setTotalPages(data.totalPages || 1);
-            setCurrentPage(pg);
-        });
+            .then(r => r.json())
+            .then(data => {
+                setListings(Array.isArray(data.listings) ? data.listings : []);
+                setTotalPages(data.totalPages || 1);
+                setCurrentPage(pg);
+            });
     }
 
     useEffect(() => {
-        fetchListings(1);
+        const urlParams = new URLSearchParams(window.location.search);
+
+        const urlQuery = urlParams.get("query") || "";
+
+        if (urlQuery) setQuery(urlQuery);
+
+        const params = new URLSearchParams();
+        if (urlQuery) params.set("query", urlQuery);
+
+        fetch(`/api/listings?${params.toString()}`)
+            .then(r => r.json())
+            .then(data => {
+                setListings(Array.isArray(data.listings) ? data.listings : []);
+                setTotalPages(data.totalPages || 1);
+            });
+
     }, []);
 
     return (
@@ -72,10 +88,10 @@ function SearchPage() {
                     <InputGroupAddon>
                         <Search />
                     </InputGroupAddon>
-                    <InputGroupInput 
-                    placeholder="Search..." 
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
+                    <InputGroupInput
+                        placeholder="Search..."
+                        value={query}
+                        onChange={(e) => setQuery(e.target.value)}
                     />
                 </InputGroup>
                 <Button onClick={() => {
@@ -113,18 +129,18 @@ function SearchPage() {
                                     <InputGroupAddon>
                                         <DollarSignIcon />
                                     </InputGroupAddon>
-                                    <InputGroupInput placeholder="Min" 
-                                    value={minPrice}
-                                    onChange={(e) => setMinPrice(e.target.value)} />
+                                    <InputGroupInput placeholder="Min"
+                                        value={minPrice}
+                                        onChange={(e) => setMinPrice(e.target.value)} />
                                 </InputGroup>
                                 <span>to</span>
                                 <InputGroup>
                                     <InputGroupAddon>
                                         <DollarSignIcon />
                                     </InputGroupAddon>
-                                    <InputGroupInput placeholder="Max" 
-                                    value={maxPrice}
-                                    onChange={(e) => setMaxPrice(e.target.value)} />
+                                    <InputGroupInput placeholder="Max"
+                                        value={maxPrice}
+                                        onChange={(e) => setMaxPrice(e.target.value)} />
                                 </InputGroup>
                             </Field>
                             <Field orientation="horizontal">
@@ -156,7 +172,7 @@ function SearchPage() {
                             ))}
                         </FieldGroup>
                     </FieldSet>
-                    <Toggle className="mt-4 w-full" variant="outline" pressed={verified} onPressedChange={(val)=>setVerified(val)}>
+                    <Toggle className="mt-4 w-full" variant="outline" pressed={verified} onPressedChange={(val) => setVerified(val)}>
                         Verified Providers Only
                     </Toggle>
                 </div>
@@ -166,57 +182,57 @@ function SearchPage() {
                     <div className="grid grid-cols-3 gap-4">
                         {/* Repeat for each search result on page */}
                         {listings.map((listing) => (
-    <Card className="relative mx-auto w-full" key={listing._id}>
-        <div className="aspect-video w-full bg-gray-200 flex items-center justify-center text-gray-400 text-sm">
-            Image
-        </div>
-        <CardHeader>
-            <CardTitle>{listing.title}</CardTitle>
-            <CardDescription>
-                <div>{listing.description}</div>
-                <div className="mt-2 flex items-center gap-4">
-                    <span className="text-sm text-muted-foreground">${listing.dailyRate}/day</span>
-                    <span className="flex-grow"></span>
-                    <span className="text-sm text-muted-foreground">{listing.location}</span>
-                </div>
-            </CardDescription>
-        </CardHeader>
-        <CardFooter>
-            <Button asChild>
-                <Link href={`/listings/${listing._id}`}>View Details</Link>
-            </Button>
-            <span className="ml-4 text-sm text-muted-foreground flex items-center gap-1">
-                <StarIcon className="w-4 h-4 fill-primary text-primary" />
-                {listing.avgRating ? `${listing.avgRating} (${listing.reviewCount})` : "No reviews"}
-            </span>
-        </CardFooter>
-    </Card>
-))}
+                            <Card className="relative mx-auto w-full" key={listing._id}>
+                                <div className="aspect-video w-full bg-gray-200 flex items-center justify-center text-gray-400 text-sm">
+                                    Image
+                                </div>
+                                <CardHeader>
+                                    <CardTitle>{listing.title}</CardTitle>
+                                    <CardDescription>
+                                        <div>{listing.description}</div>
+                                        <div className="mt-2 flex items-center gap-4">
+                                            <span className="text-sm text-muted-foreground">${listing.dailyRate}/day</span>
+                                            <span className="flex-grow"></span>
+                                            <span className="text-sm text-muted-foreground">{listing.location}</span>
+                                        </div>
+                                    </CardDescription>
+                                </CardHeader>
+                                <CardFooter>
+                                    <Button asChild>
+                                        <Link href={`/listings/${listing._id}`}>View Details</Link>
+                                    </Button>
+                                    <span className="ml-4 text-sm text-muted-foreground flex items-center gap-1">
+                                        <StarIcon className="w-4 h-4 fill-primary text-primary" />
+                                        {listing.avgRating ? `${listing.avgRating} (${listing.reviewCount})` : "No reviews"}
+                                    </span>
+                                </CardFooter>
+                            </Card>
+                        ))}
                     </div>
                     {/* Pagination controls */}
                     <Pagination className="mt-6" aria-label="Search results pagination">
-                    <PaginationContent>
-                        <PaginationPrevious
-                            onClick={() => currentPage > 1 && fetchListings(currentPage - 1)}
-                            className={currentPage <= 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
-                        />
-                        {Array.from({ length: totalPages }, (_, i) => i + 1).map((pg) => (
-                            <PaginationItem key={pg}>
-                                <PaginationLink
-                                    onClick={() => fetchListings(pg)}
-                                    isActive={pg === currentPage}
-                                    className="cursor-pointer"
-                                >
-                                    {pg}
-                                </PaginationLink>
-                            </PaginationItem>
-                        ))}
-                        <PaginationNext
-                            onClick={() => currentPage < totalPages && fetchListings(currentPage + 1)}
-                            className={currentPage >= totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
-                        />
-                    </PaginationContent>
-                </Pagination>
+                        <PaginationContent>
+                            <PaginationPrevious
+                                onClick={() => currentPage > 1 && fetchListings(currentPage - 1)}
+                                className={currentPage <= 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                            />
+                            {Array.from({ length: totalPages }, (_, i) => i + 1).map((pg) => (
+                                <PaginationItem key={pg}>
+                                    <PaginationLink
+                                        onClick={() => fetchListings(pg)}
+                                        isActive={pg === currentPage}
+                                        className="cursor-pointer"
+                                    >
+                                        {pg}
+                                    </PaginationLink>
+                                </PaginationItem>
+                            ))}
+                            <PaginationNext
+                                onClick={() => currentPage < totalPages && fetchListings(currentPage + 1)}
+                                className={currentPage >= totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                            />
+                        </PaginationContent>
+                    </Pagination>
                 </div>
             </div>
         </div>
