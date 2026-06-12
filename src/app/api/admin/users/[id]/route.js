@@ -65,7 +65,7 @@ export async function DELETE(_request, { params }) {
     return admin.error;
   }
 
-  const { id } = params;
+  const { id } = await params;
   if (!id || !mongoose.Types.ObjectId.isValid(id)) {
     return invalidIdResponse();
   }
