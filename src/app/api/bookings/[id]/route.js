@@ -73,6 +73,7 @@ export async function PATCH(request, { params }) {
         }
 
         booking.status = status;
+        booking.updatedAt = new Date();
         await booking.save();
 
         return new Response(JSON.stringify(booking), {
