@@ -4,20 +4,36 @@ A website to share medical equipment for patients and institutions.
 ## Description
 Patients who require medical equipment often have a hard time getting their hands on it due to pricing and scarcity. MedShare is a medical equipment sharing website that makes it easy for patients to find the medical equipment that they need, and for providers to find patients who are in need of that medical equipment. Much like Airbnb, both the provider and patients/caregivers can leave ratings and reviews for the other after the service is complete. Over time, providers can build strong reputations, allowing patients to get access to reliable equipment from trustworthy sources.
 
-### Currently Working:
-Frontend pages for user authentication, the home page, equipment listings details, and the search page, with no backend functionality.
+## Team Contributions
+### Gavin
+- Authentication pages + backend
+- Profiles implementation
+- API routes for bookings, users, and admin
+- Admin panel UI
+- Search Page UI
 
-User auth pages:
-`localhost:3000/login` and `localhost:3000/signup`
+### Keanu
+- Created the Homepage UI
+- Wrote the About page
+- Organized some of the UI
+- Title implementation
 
-Home page:
-`localhost:3000/`
+### Ben
+- Made the Review Form UI
+- Made Review API Endpoints
+- Made Search API Endpoints
+- Created the Listing Page UI
+- Created Listing API Endpoints
+- Helped Create Post Booking
 
-Equipment listing details page:
-`localhost:3000/listings/:id` (id doesn't matter for now)
+## Features:
+* Create and manage listings for medical equipment
+* Book equipment from providers with an easy-to-use interface
+* Leave reviews for specific listings
+* Admin panel to manage users, listings, bookings, and reviews
+* Search functionality to find listings based on keywords and filters
+* User profiles with bios, provider types, and average ratings 
 
-Search page:
-`localhost:3000/search`
 
 ## Tools Used
 - **Frontend**: React, Next.js, Tailwind CSS, shadcn/ui components
@@ -39,6 +55,10 @@ Search page:
 `npm run dev`
 ```
 4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+Note: You will need to set up a `.env` file with the necessary environment variables for MongoDB connection and any other secrets. An example `.env.example` file is included in the repository.
+
+Additionally, you must insert an admin user directly into the MongoDB database to access the admin panel. The easiest way to do this is to change the `role` field of an existing user document to `admin`.
 
 
 ## Generative AI Disclosure
