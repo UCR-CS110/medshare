@@ -103,7 +103,7 @@ function SearchPage() {
             <div className="flex mt-5">
                 {/* Sidebar with filters */}
                 <div className="w-1/5 pr-4">
-                    {/* Filter options */}
+                    {/* Filter options
                     <FieldSet className="border border-separator rounded-md p-4">
                         <FieldLabel>Distance</FieldLabel>
                         <RadioGroup className="space-y-2">
@@ -120,7 +120,7 @@ function SearchPage() {
                                 <Label htmlFor="within-50">Within 50 miles</Label>
                             </div>
                         </RadioGroup>
-                    </FieldSet>
+                    </FieldSet> */}
                     <FieldSet className="border border-separator rounded-md p-4 mt-4">
                         <FieldGroup className={"gap-3"}>
                             <FieldLabel>Price Range (Daily)</FieldLabel>
@@ -190,6 +190,11 @@ function SearchPage() {
                                     <CardTitle>{listing.title}</CardTitle>
                                     <CardDescription>
                                         <div>{listing.description}</div>
+                                    </CardDescription>
+                                </CardHeader>
+                                <span className="flex-grow"></span>
+                                <CardHeader>
+                                    <CardDescription>
                                         <div className="mt-2 flex items-center gap-4">
                                             <span className="text-sm text-muted-foreground">${listing.dailyRate}/day</span>
                                             <span className="flex-grow"></span>

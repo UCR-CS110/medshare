@@ -39,8 +39,14 @@ export async function GET(req) {
     let sellerFilter = {};
     if (verified === "true") sellerFilter.isVerified = true;
     if (providerType) sellerFilter.providerType = providerType;
+
+    // if includeUnavailable is false, exclude listings that have a confirmed booking and the booking dates overlap with the current date
     if (!includeUnavailable) {
-      const unavailableListings = await Booking.find({ status: "confirmed" }).distinct("listing");
+      const unavailableListings = await Booking.find({
+        status: "confirmed",
+        startDate: { $lte: new Date() },
+        endDate: { $gte: new Date() },
+      }).distinct("listing");
       filter._id = { $nin: unavailableListings };
     }
 
